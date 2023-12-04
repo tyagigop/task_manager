@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks - {{ user_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Helvetica', sans-serif;
+            padding-top: 50px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-dropdown {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            background-color: #ffffff;
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .completed-yes {
+            background-color: #49dc69 !important;
+        }
+
+        /* Additional styling for the pie chart */
+        #pieChartContainer {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 120px;
+            height: 120px;
+        }
+
+        /* Additional styling for the form and date picker */
+        form {
+            margin-bottom: 20px;
+        }
+
+        .nav-item :hover {
+            background-color: #b0c5db;
+            cursor: pointer;
+            box-shadow: 0 5px 35px 0px
+        }
+
+        .selected {
+            background-color: #6cb4ea;
+        }
+
+        .notes-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        /* Responsive styling for smaller screens */
+        @media (max-width: 768px) {
+            #pieChartContainer {
+                margin-top: 120px;
+                margin-bottom: 20px;
+                margin-left: 80px;
+            }
+
+            .filter-buttons {
+                margin-top: 20px;
+            }
+
+            .table {
+                margin-top: 20px;
+                width: 80%;
+            }
+
+            th,
+            td {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 0px;
+            }
+
+            .align-items-center {
+                padding: 15px;
+            }
+        }
+
+        .accordion-container {
+            display: flex;
+            flex-direction: column;
+            max-width: auto;
+        }
+
+        .accordion-header {
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1>{{ user_name }}'s Tasks</h1>
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        Dates
+                    </h6>
+                    <ul class="nav flex-column">
+                        {% for date in unique_dates %}
+                        <li class="nav-item">
+                            <a class="nav-link date-filter {% if date_selected == date %}selected{% endif %}" data-date="{{ date }}">{{ date }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+                    <form method="post" class="mb-4">
+                        {% csrf_token %}
+
+                        <div class="form-row align-items-center">
+                            <div class="col-auto">
+                                <label for="date-filter" class="sr-only">Filter by Date:</label>
+                                <input type="text" id="date-filter" name="selected_date" class="form-control" autocomplete="off" value="{{date_selected}}" placeholder="Select a date">
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="accordion-container">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Task Name</th>
+                                    <th scope="col">Completion Time</th>
+                                    <th scope="col">Priority</th>
+                                    <th scope="col">Completed</th>
+                                    <th scope="col">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr>
+                                    <!-- Inside the loop where tasks are displayed -->
+                                    {% if date_selected == todays_date %}
+                                    <td class="editable" onclick="startEditing(this, '{{ task.0 }}', 'task_name')">{{ task.2 }}</td>
+                                    <td class="editable" onclick="startEditing(this, '{{ task.0 }}', 'completion_time')">{{ task.4 }}</td>
+                                    <td class="editable" onclick="startEditing(this, '{{ task.0 }}', 'priority')">{{ task.5 }}</td>
+                                    <!-- Other columns remain unchanged -->
+                                    {% else %}
+                                    <td>{{ task.2 }}</td>
+                                    <td>{{ task.4 }}</td>
+                                    <td>{{ task.5 }}</td>
+                                    {% endif %}
+
+
+
+                                    <td>{{ task.8 }}</td>
+                                    <td>
+                                        <!-- Accordion item for each task -->
+                                        <div class="accordion-item">
+                                            <div class="accordion-header" onclick="toggleAccordion('{{ task.0 }}')">
+                                                View Notes
+                                            </div>
+                                            <div class="accordion-content" id="{{ task.0 }}">
+                                                <textarea id="notes-{{ task.0 }}" rows="4" cols="60">{{ task.9 }}</textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if date_selected == todays_date %}
+                    <div class="col-auto filter-buttons">
+                        <a href="https://taskblaze.tech/add_task/{{mobile_number}}" class="btn btn-primary">Add Task</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Pie Chart Container -->
+    <div id="pieChartContainer">
+        <canvas id="pieChart" width="150" height="150"></canvas>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and Bootstrap Datepicker scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <!-- ... Your HTML and CSS ... -->
+
+<script>
+        $(document).ready(function () {
+            $('#date-filter').datepicker({
+                format: 'dd-mm-yyyy',
+                endDate: new Date(),
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            document.getElementById("date-filter").style.display = "none";
+
+            $(document).on('click', '.date-filter', function () {
+                var selectedDate = $(this).data('date');
+                $('#date-filter').datepicker('setDate', selectedDate);
+                $('form').submit();
+            });
+
+            var completedCount = {{ completed_count }};
+            var incompleteCount = {{ incomplete_count }};
+
+            var ctx = document.getElementById('pieChart').getContext('2d');
+            var pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: [completedCount, incompleteCount],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                    }],
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            formatter: function (value, context) {
+                                return context.chart.data.labels[context.dataIndex] + ': ' + value + '%';
+                            },
+                        },
+                    },
+                },
+            });
+
+            
+        });
+        function startEditing(cell, taskId, column) {
+            // Replace the content of the cell with an input field
+            const input = document.createElement('input');
+            input.value = cell.innerText;
+            cell.innerHTML = '';
+            cell.appendChild(input);
+
+            // Focus on the input field
+            input.focus();
+
+            // Attach an event listener to finish editing on Enter key press
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    finishEditing(cell, taskId, column);
+                }
+            });
+        }
+        function finishEditing(cell, taskId, column) {
+            // Replace the input field with its value
+            var updatedValue = cell.firstChild.value;
+            cell.innerText = updatedValue;
+
+            // Make an AJAX request to update the task details
+            $.ajax({
+                url: '/update_task/',  // Replace with the actual URL to update task details on your server
+                method: 'POST',
+                data: {
+                    task_id: taskId,
+                    column: column,
+                    value: updatedValue
+                },
+                success: function (response) {
+                    console.log('Task details updated successfully:', response);
+                    // You can add further actions if needed
+                },
+                error: function (error) {
+                    console.error('Error updating task details:', error);
+                    // Handle errors appropriately
+                }
+            });
+        }
+
+        function toggleAccordion(contentId) {
+            console.log(contentId);
+            var content = document.getElementById(contentId);
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+            var taskId = contentId;
+            var updatedNotes = document.getElementById("notes-" + taskId).value;
+
+            // Make an AJAX request to update the notes
+            $.ajax({
+                url: '/update_notes/',  // Replace with the actual URL to update notes on your server
+                method: 'POST',
+                data: {
+                    task_id: taskId,
+                    notes: updatedNotes
+                },
+                success: function (response) {
+                    console.log('Notes updated successfully:', response);
+                    // You can add further actions if needed
+                },
+                error: function (error) {
+                    console.error('Error updating notes:', error);
+                    // Handle errors appropriately
+                }
+            });
+        }
+    </script>
+<!-- ... Your HTML ... -->
+
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Task</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #007bff;
+        }
+
+        .task {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-4">Define Your Tasks</h1>
+
+        <!-- Form for entering mobile number -->
+
+        <h5>Hey {{user_name}}. Add your today's tasks</h5>
+
+        <!-- Form for adding tasks -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Task input fields -->
+            <div id="tasks">
+                <div class="task form-row">
+                    <div class="col-md-12 mb-3">
+                        <label for="task_name">Task Name: [ TASK_NAME - DUE_TIME ,] Each task is comma separated</label>
+                        <textarea type="text" rows="10" class="form-control" name="task_name" placeholder="Eg. : Writing a blog - 18:06 , Playing BGMI - 19:45," required></textarea>
+                    </div>
+
+                </div>
+            </div>
+            <hr>
+
+            <!-- Button to add more tasks dynamically -->
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-success mb-3">Submit Tasks</button>
+            <a href = "https://taskblaze.tech/view_tasks/{{mobile_number}}" class="btn btn-primary mb-3">View Tasks</a>
+        </form>
+    </div>
+
+    <!-- Add Bootstrap JS and Popper.js scripts -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>

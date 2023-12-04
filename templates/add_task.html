@@ -1,0 +1,99 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Task</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #007bff;
+        }
+
+        .task {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4 mb-4">Define Your Tasks</h1>
+
+        <!-- Form for entering mobile number -->
+
+        <h5>Hey {{user_name}}. Add your today's tasks</h5>
+
+        <!-- Form for adding tasks -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Task input fields -->
+            <div id="tasks">
+                <div class="task form-row">
+                    <div class="col-md-12 mb-3">
+                        <label for="task_name">Task Name:</label>
+                        <input type="text" class="form-control" name="task_name[]" placeholder="Task Name" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="completion_time">Completion Time:</label>
+                        <input type="time" name="completion_time[]" class="form-control" value="00:00">
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="priority">Priority:</label>
+                        <select name="priority[]" class="form-control">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label for="achievable">Achievable:</label>
+                        <select name="achievable[]" class="form-control">
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                    
+
+                    <div class="col-md-3">
+                        <label for="specific">Specific:</label>
+                        <input type="text" name="specific[]" rows="3" class="form-control" placeholder="Enter specific details"></input>
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <!-- Button to add more tasks dynamically -->
+            <button type="button" class="btn btn-primary mb-3" onclick="addTask()">Add Task</button>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-success mb-3">Submit Tasks</button>
+            <a href = "https://taskblaze.tech/view_tasks/{{mobile_number}}" class="btn btn-primary mb-3">View Tasks</a>
+        </form>
+    </div>
+
+    <!-- Add Bootstrap JS and Popper.js scripts -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        function addTask() {
+            // Clone the task div and append it to the tasks div
+            var taskDiv = document.querySelector('.task');
+            var newTask = taskDiv.cloneNode(true);
+            document.getElementById('tasks').appendChild(newTask);
+        }
+    </script>
+</body>
+</html>
