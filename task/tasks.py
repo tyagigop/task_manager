@@ -33,7 +33,7 @@ def handle_user_response(request, user_number, user_message):
     if user_message == 'add task' or user_message == 'add' or user_message == 'add tasks':
         link = "https://taskblaze.tech/add_tasks/"+user_number[12:]
         client.messages.create(
-            from_='whatsapp:+917618207974',
+            from_='whatsapp:+919643832733',
             body=link,
             to=user_number
         )
@@ -50,7 +50,7 @@ def handle_user_response(request, user_number, user_message):
         c.close()
         if not tasks:
             client.messages.create(
-                from_='whatsapp:+917618207974',
+                from_='whatsapp:+919643832733',
                 body="You don't have any tasks for today.",
                 to=user_number
             )
@@ -76,19 +76,19 @@ def handle_user_response(request, user_number, user_message):
         message += f"🚀 You have completed {completion_percentage:.2f}% of your tasks for today.\n\n"
         message += f"👉 You View Tasks Here :\n\n{link}"
         client.messages.create(
-            from_='whatsapp:+917618207974',
+            from_='whatsapp:+919643832733',
             body=message,
             to=user_number
         )
     elif user_message == 'help':
         client.messages.create(
-            from_='whatsapp:+917618207974',
+            from_='whatsapp:+919643832733',
             body="Type 'add task' to add a task. Type 'view tasks' to view your tasks.",
             to=user_number
         )
     elif user_message == 'hi' or user_message == 'hello' or user_message == 'hey' or user_message == 'hii' or user_message == 'hiii' or user_message == 'hiiii' or user_message == 'hiiiii' or user_message == 'hiiiiii' or user_message == 'hiiiiiii' or user_message == 'hiiiiiiii' or user_message == 'hiiiiiiiii' or user_message == 'hiiiiiiiiii' or user_message == 'hiiiiiiiiiii' or user_message == 'hiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiiiiii':
         client.messages.create(
-            from_='whatsapp:+917618207974',
+            from_='whatsapp:+919643832733',
             body="Hey! Type 'help' to know more.",
             to=user_number
         )
@@ -133,7 +133,7 @@ def handle_user_response(request, user_number, user_message):
                 c.close()
                 msg = "Okay. I will remind you again to complete "+task_name+" at "+task_time+"."
                 client.messages.create(
-                    from_='whatsapp:+917618207974',
+                    from_='whatsapp:+919643832733',
                     body=msg,
                     to=user_number
                 )
@@ -144,7 +144,7 @@ def handle_user_response(request, user_number, user_message):
             conn.commit()
             c.close()
             client.messages.create(
-                from_='whatsapp:+917618207974',
+                from_='whatsapp:+919643832733',
                 body="Great! Keep it up!",
                 to=user_number
             )
@@ -152,7 +152,7 @@ def handle_user_response(request, user_number, user_message):
         else:
 
             client.messages.create(
-                from_='whatsapp:+917618207974',
+                from_='whatsapp:+919643832733',
                 body="Sorry, I didn't get that. Type 'help' to know more.",
                 to=user_number
             )
@@ -186,7 +186,7 @@ def handle_user_response(request, user_number, user_message):
                 conn.commit()
                 c.close()
                 client.messages.create(
-                    from_='whatsapp:+917618207974',
+                    from_='whatsapp:+919643832733',
                     body="Okay. I will Discard it.",
                     to=user_number
                 )
@@ -196,14 +196,14 @@ def handle_user_response(request, user_number, user_message):
             conn.commit()
             c.close()
             client.messages.create(
-                from_='whatsapp:+917618207974',
+                from_='whatsapp:+919643832733',
                 body="Will you be able to complete it today?",
                 to=user_number
             )
         
         else:
             client.messages.create(
-                from_='whatsapp:+917618207974',
+                from_='whatsapp:+919643832733',
                 body="Sorry, I didn't get that. Type 'help' to know more.",
                 to=user_number
             )
@@ -225,13 +225,13 @@ def handle_user_response(request, user_number, user_message):
                 conn.commit()
                 c.close()
                 client.messages.create(
-                    from_='whatsapp:+917618207974',
+                    from_='whatsapp:+919643832733',
                     body="Great! Keep it up! I marked this as complete.",
                     to=user_number
                 )
             else:
                 client.messages.create(
-                    from_='whatsapp:+917618207974',
+                    from_='whatsapp:+919643832733',
                     body="You have already completed this task.",
                     to=user_number
                 )
@@ -250,7 +250,7 @@ def handle_user_response(request, user_number, user_message):
 
                 # Send the message via WhatsApp
                 client.messages.create(
-                    from_='whatsapp:+917618207974',
+                    from_='whatsapp:+919643832733',
                     body=chatgpt_response,
                     to=user_number
                 )
@@ -260,7 +260,7 @@ def handle_user_response(request, user_number, user_message):
                 # Here, you can handle the error as needed, 
                 # for example, by sending a default message or logging the error.
                 client.messages.create(
-                    from_='whatsapp:+917618207974',
+                    from_='whatsapp:+919643832733',
                     body="Sorry, I didn't get that. Type 'help' to know more.",
                     to=user_number
                 )
@@ -293,7 +293,7 @@ def send_reminders_new():
         reminder_message = "Hey "+user_name+"! Have you completed: "+task_name + "? Reply with 'yes' or 'no'."
         user_number = 'whatsapp:+91'+user_number
         client.messages.create(
-            from_='whatsapp:+917618207974',
+            from_='whatsapp:+919643832733',
             body=reminder_message,
             to=user_number
         )
@@ -307,7 +307,7 @@ def send_reminders_new():
 
 @shared_task
 def reminder_to_registered_user_every_morning_new():
-    reminder_time = '19:20'
+    reminder_time = '07:00'
     india_timezone = pytz.timezone('Asia/Kolkata')
 
     # Get the current time in India
@@ -329,7 +329,7 @@ def reminder_to_registered_user_every_morning_new():
             reminder_message += user_number
             user_number = 'whatsapp:+91'+user_number
             client.messages.create(
-                from_='whatsapp:+917618207974',
+                from_='whatsapp:+919643832733',
                 body=reminder_message,
                 to=user_number
             )
