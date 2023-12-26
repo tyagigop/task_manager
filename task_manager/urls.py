@@ -29,7 +29,7 @@ urlpatterns = [
     path('add_tasks/<str:mobile>/', add_task2, name='add_task2'),
     path('view_tasks/<str:mobile>/', view_tasks, name='view_tasks'),
     path('save_tasks/<str:mobile>/', save_tasks, name='save_tasks'),
-    path('view_users/', view_users, name='view_users'),
+    path('xxxxx/', view_users, name='view_users'),
     path('view_logs/<int:user_id>/', view_logs, name='view_logs'),
     path('view_tasks/periodic/<str:mobile>/', view_periodic_tasks, name='view_periodic_tasks'),
     path('feedback/', feedback, name='feedback'),
@@ -41,7 +41,7 @@ urlpatterns = [
     path('update-task-status', update_task_status, name='update_task_status'),
     path('registerclickevent/', save_click_event, name='save_click_event'),
     path('getcountry/', get_country, name='get_country'),
-    path('view-click-events/', view_ClickEvent, name='view_ClickEvent'),
+    path('xxxxxxx/', view_ClickEvent, name='view_ClickEvent'),
         
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
