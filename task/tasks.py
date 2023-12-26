@@ -20,8 +20,8 @@ openai.api_key = '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'
 from celery import shared_task
 
 
-account_sid = 'AC350f7216d74983430088fa7b2f6e2662'
-auth_token = 'd3bf470287a686ed42050a37dd616967'
+account_sid = 'xxxxx'
+auth_token = 'xxxxx'
 client = Client(account_sid, auth_token)
 
 
