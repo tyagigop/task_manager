@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks - {{ user_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+    <style>
+        /* General styling */
+body {
+    background-color: #f4f7f6;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+html {
+    height: 100%;
+}
+
+
+
+
+.container-fluid {
+    position: relative;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    height: 100%;
+    flex: 1;
+}
+
+h1 {
+    color: #4a4e69;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    background-color: #f4f7f6;
+    height: calc(500px - 20px); /* Adjust the 20px to the desired bottom gap */
+    overflow-y: auto; /* Use auto instead of scroll for cleaner look when content is short */
+    margin-bottom: 20px; /* This adds space below the sidebar */
+    box-shadow: #dee2e6;
+    transition: left 0.3s; /* Smooth slide-in effect */
+    
+    
+
+}
+
+.nav-link {
+    position: relative;
+    display: inline-block; /* or block, depending on your layout */
+    color: #495057; /* your text color */
+    text-decoration: none; /* removes the default underline */
+}
+
+/* Add the pseudo-element */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px; /* thickness of the underline */
+    bottom: 0; /* position of the underline */
+    left: 50%;
+    background-color: #007bff; /* color of the underline */
+    transition: width 0.4s ease 0s, left 0.4s ease 0s;
+}
+
+/* Hover effect */
+.nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+
+.nav-link.selected {
+    
+    color: white;
+    border-bottom: #007bff 2px solid;
+}
+.navbar-toggler-icon {
+    color: #277ae0 !important; /* Change this to a color that contrasts with your navbar's background */
+    background-color: #495057;
+}
+
+
+/* Main Content Styling */
+table {
+    background-color: rgb(179, 212, 221);
+    border-collapse: collapse;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+table:hover {
+    box-shadow: 0 8px 16px rgba(97, 140, 182, 0.2);
+}
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    text-align: left;
+}
+
+th {
+    background-color: rgb(252, 252, 252)255, 149);
+    color: #ffffff;
+    font-weight: bold;
+    position: sticky;
+    top: 0; /* Set to 0 to stick at the top of the container */
+    background-color: white; /* Optional: to ensure text is readable over any underlying content */
+    z-index: 1; 
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar, .main-content {
+        width: 100%;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+}
+
+/* Accordion Styling */
+.accordion-header {
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.accordion-content {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+.table-responsive {
+    height: 400px;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+    @media (max-width: 993px) {
+        /* Adjust table and graph layout for mobile screens */
+        
+
+        /* Sidebar styling for mobile */
+        #sidebar {
+            position: fixed; /* Or absolute, depending on your design */
+            width: 250px; /* Adjust as needed */
+            left: -250px; /* Hide sidebar off-screen */
+            transition: left 0.3s; /* Smooth slide-in effect */
+            z-index: 1000; /* Ensure sidebar stays on top of other elements */
+
+        }
+    }
+
+    .side-heading-first{
+        font-size: 4.5rem;
+        font-weight: bold;
+        color: #b7c7d8;
+        rotate: -90deg;
+        position: relative;
+        top: 150px;
+    }
+    .side-heading-second{
+        font-size: 1rem;
+        font-weight: bold;
+        color: #7db3ea;
+        rotate: -90deg;
+        position: relative;
+        top: 50px;
+        left: 50px;
+    }
+    .side-heading-first-weekly{
+        font-size: 4.5rem;
+        font-weight: bold;
+        color: #a9dacd;
+        rotate: -90deg;
+        position: relative;
+        top: 150px;
+    }
+    .side-heading-first-monthly{
+        font-size: 4.5rem;
+        font-weight: bold;
+        color: #868e94;
+        rotate: -90deg;
+        position: relative;
+        top: 150px;
+    }
+    .side-heading-second-weekly{
+        font-size: 1rem;
+        font-weight: bold;
+        color: #a2aab6;
+        rotate: -90deg;
+        position: relative;
+        top: 50px;
+        left: 50px;
+    }
+    .side-heading-second-monthly{
+        font-size: 1rem;
+        font-weight: bold;
+        color: #5ededc;
+        rotate: -90deg;
+        position: relative;
+        top: 50px;
+        left: 50px;
+    }
+    table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg custom-navbar" name="navbar-periodic-tasks">
+        <a class="navbar-brand" href="/" name="task-blaze-logo">TaskBlaze</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Portfolio</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="https://taskblaze.tech/add_tasks/{{mobile_number}}">Add Tasks</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Journal</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/view_tasks/{{mobile_number}}">Regular Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">{{ user_name }}</a>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid mb-5" name="periodic-tasks-div">
+        <h1>{{ user_name }}'s Tasks</h1>
+        {% if daily_tasks|length != 0 %}
+        <div class="row" name="daily-tasks">
+            <div class="col-md-3 col-lg-2 d-md-block collapse" id="sidebar">
+                <p class="side-heading-first">Daily</p>
+                <p class="side-heading-second">Scheduled Tasks</p>
+            </div>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+
+                    
+                    
+                    <form method="post" action="/save_tasks/{{mobile_number}}/" id="task-form">
+                        {% csrf_token %}
+                        
+                        <!-- Task Table -->
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Task Name</th>
+                                        <th scope="col">Completion Time</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Notes</th>
+                                        <th scope="col">Date Added</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for task in daily_tasks %}
+                                    <tr name="daily-task-edit">
+                                        
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.0 }}</span>
+                                            <input type="text" name="task_name_{{ task.5 }}" value="{{ task.0 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.2 }}</span>
+                                            <input type="text" name="completion_time_{{ task.5 }}" value="{{ task.2 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.3 }}</span>
+                                            <input type="text" name="priority_{{ task.5 }}" value="{{ task.3 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.4 }}</span>
+                                            <textarea name="notes_{{ task.5 }}" rows="4" class="form-control d-none">{{ task.4 }}</textarea>
+                                        </td>
+                                        <td>
+                                            <span>{{ task.1 }}</span>
+                                            <input type="text" name="date_added_{{ task.5 }}" value="{{ task.1 }}" class="form-control d-none">
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" name="form_type" value="save_tasks" class="btn btn-outline-primary mt-4 text-center">Save Changes</button>
+                        </div>
+                    </form>
+                     
+                </div>
+            </main>
+
+        </div>
+        {% endif %}
+        {% if weekly_tasks|length != 0 %}
+        <div class="row" name="weekly-tasks">
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse" id="sidebar">
+                <p class=" side-heading-first-weekly">Weekly</p>
+                <p class=" side-heading-second-weekly">Scheduled Tasks</p>
+            </div>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+
+                    
+                    
+                    <form method="post" action="/save_tasks/{{mobile_number}}/" id="task-form">
+                        {% csrf_token %}
+                        
+                        <!-- Task Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Task Name</th>
+                                        <th scope="col">Completion Time</th>
+                                        <th scope="col">Priority</th>
+                                        <!-- <th scope="col">Completed</th> -->
+                                        <th scope="col">Notes</th>
+                                        <th scope="col">Date Added</th>
+                                    </tr>
+                                </thead>
+                                <tbody name="weekly-tasks-edit">
+                                    {% for task in weekly_tasks %}
+                                    <tr>
+                                        
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.0 }}</span>
+                                            <input type="text" name="task_name_{{ task.5 }}" value="{{ task.0 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.2 }}</span>
+                                            <input type="text" name="completion_time_{{ task.5 }}" value="{{ task.2 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.3 }}</span>
+                                            <input type="text" name="priority_{{ task.5 }}" value="{{ task.3 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.4 }}</span>
+                                            <textarea name="notes_{{ task.5 }}" rows="4" class="form-control d-none">{{ task.4 }}</textarea>
+                                        </td>
+                                        <td>
+                                            <span>{{ task.1 }}</span>
+                                            <input type="text" name="date_added_{{ task.5 }}" value="{{ task.1 }}" class="form-control d-none">
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" name="form_type" value="save_tasks" class="btn btn-outline-primary mt-4 text-center">Save Changes</button>
+                        </div>                    </form>
+                </div>
+            </main>
+
+        </div>
+        {% endif %}
+        {% if monthly_tasks|length != 0 %}
+        <div class="row" name="monthly-tasks">
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse" id="sidebar">
+                <p class="side-heading-first-monthly">Monthly</p>
+                <p class="side-heading-second-monthly">Scheduled Tasks</p>
+            </div>
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+
+                    
+                    
+                    <form method="post" action="/save_tasks/{{mobile_number}}/" id="task-form">
+                        {% csrf_token %}
+                        
+                        <!-- Task Table -->
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Task Name</th>
+                                        <th scope="col">Completion Time</th>
+                                        <th scope="col">Priority</th>
+                                        <!-- <th scope="col">Completed</th> -->
+                                        <th scope="col">Notes</th>
+                                        <th scope="col">Date Added</th>
+                                    </tr>
+                                </thead>
+                                <tbody name="monthly-tasks-edit">
+                                    {% for task in monthly_tasks %}
+                                    <tr>
+                                        
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.0 }}</span>
+                                            <input type="text" name="task_name_{{ task.5 }}" value="{{ task.0 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.2 }}</span>
+                                            <input type="text" name="completion_time_{{ task.5 }}" value="{{ task.2 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.3 }}</span>
+                                            <input type="text" name="priority_{{ task.5 }}" value="{{ task.3 }}" class="form-control d-none">
+                                        </td>
+                                        <td onclick="makeEditable(this)">
+                                            <span>{{ task.4 }}</span>
+                                            <textarea name="notes_{{ task.5 }}" rows="4" class="form-control d-none">{{ task.4 }}</textarea>
+                                        </td>
+                                        <td>
+                                            <span>{{ task.1 }}</span>
+                                            <input type="text" name="date_added_{{ task.5 }}" value="{{ task.1 }}" class="form-control d-none">
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" name="form_type" value="save_tasks" class="btn btn-outline-primary mt-4 text-center">Save Changes</button>
+                        </div>                    </form>
+                     
+                </div>
+            </main>
+
+        </div>
+        {% endif %}
+    </div>
+    
+    
+
+    <!-- Bootstrap JS, Popper.js, and Bootstrap Datepicker scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <!-- ... Your HTML and CSS ... -->
+
+<script>
+        // $(document).ready(function () {
+        // $('#date-filter').datepicker({
+        //     format: 'dd-mm-yyyy',
+        //     endDate: new Date(),
+        //     autoclose: true,
+        //     todayHighlight: true
+        // });
+
+    // Assuming the dates are wrapped in elements with the class .date-filter
+    //     $('.date-filter').on('click', function () {
+    //         var selectedDate = $(this).data('date');
+    //         $('#date-filter').val(selectedDate); // Set the value of the input
+    //         $('input[name="form_type"]').val('date_filter'); // Set the form type
+    //         $('#date-filter').closest('form').submit(); // Submit the form
+    //     });
+    // });
+        // document.getElementById("date-filter").style.display = "none";
+
+        //     $(document).on('click', '.date-filter', function () {
+        //     console.log("Date filter clicked"); // Check if this logs
+        //     var selectedDate = $(this).data('date');
+        //     console.log("Selected date:", selectedDate); // Check the selected date
+
+        //     $('#date-filter').datepicker('setDate', selectedDate);
+        //     $('input[name="form_type"]').val('date_filter');
+        //     // $(this).closest('form').submit();
+        //     $('form').submit();
+        // });
+
+        // $(document).on('click', '.date-filter', function () {
+        //     console.log("Date filter clicked");
+        //     var selectedDate = $(this).data('date');
+        //     console.log("Selected date:", selectedDate);
+
+        //     $('#date-filter').datepicker('setDate', selectedDate);
+
+        //     // Ensure the form_type value is set to 'date_filter'
+        //     $('input[name="form_type"]').val('date_filter');
+
+        //     // Now submit the form
+        //     // $('form').submit();
+        //     $('#dateForm').submit();
+        // });
+
+
+        // $(document).ready(function() {
+        //     $('.navbar-toggler').click(function() {
+        //         $('#sidebar').toggleClass('show');
+        //     });
+        // });
+
+
+
+
+
+        // var completedCount = {{ completed_count }};
+        // var incompleteCount = {{ incomplete_count }};
+
+        // var ctx = document.getElementById('pieChart').getContext('2d');
+        // var pieChart = new Chart(ctx, {
+        //     type: 'pie',
+        //     data: {
+        //         labels: ['Completed Tasks', 'Incomplete Tasks'], // Add labels here
+        //         datasets: [{
+        //             data: [completedCount, incompleteCount],
+        //             backgroundColor: ['#28a745', '#dc3545'],
+        //         }],
+        //     },
+        //     options: {
+        //         plugins: {
+        //             datalabels: {
+        //                 color: '#fff',
+        //                 formatter: function (value, context) {
+        //                     return context.chart.data.labels[context.dataIndex] + ': ' + value + '%';
+        //                 },
+        //             },
+        //         },
+        //         legend: {
+        //             display: true, // Set this to true to display the legend
+        //             position: 'bottom', // You can change the position of the legend
+        //         },
+        //     },
+        // });
+
+
+            
+        // });
+        function makeEditable(td) {
+            // Hide the span and show the input field
+            var span = td.querySelector('span');
+            var input = td.querySelector('input, textarea');
+            if(span) span.classList.add('d-none');
+            if(input) input.classList.remove('d-none');
+
+            // Focus the input field
+            if(input) input.focus();
+        }
+
+        
+    //     const xValues = {{ unique_dates|safe }};
+        
+    //     console.log(xValues);
+    //     const yValues = {{ total_tasks|safe }};
+    //     const zValues = {{ completed_tasks|safe }};
+
+    //     const remainingTasks = yValues.map((y, i) => y - zValues[i]);
+
+    //     new Chart("myChart", {
+    //     type: "bar",
+    //     data: {
+    //         labels: xValues,
+    //         datasets: [
+    //             {
+    //                 label: 'Completed Tasks',
+    //                 data: zValues,
+    //                 backgroundColor: "rgba(0, 128, 0, 0.7)",
+    //                 borderColor: "rgba(0, 128, 0, 1)",
+    //                 borderWidth: 1
+    //             },
+    //             {
+    //                 label: 'Remaining Tasks',
+    //                 data: remainingTasks,
+    //                 backgroundColor: "rgba(143, 120, 101, 0.97)",
+    //                 borderColor: "rgba(255, 99, 132, 1)",
+    //                 borderWidth: 1
+    //             }
+    //         ]
+    //     },
+    //     options: {
+    //         legend: { display: true },
+    //         scales: {
+    //             yAxes: [{
+    //                 stacked: true,
+    //                 ticks: { min: 0, max: 16 },
+                    
+    //             }],
+    //             xAxes: [{
+    //                 stacked: true,
+                    
+    //             }]
+    //         }
+    //     }
+    // });
+
+    </script>
+<!-- ... Your HTML ... -->
+<script>
+    $(document).ready(function() {
+        // Function to send data to server
+        function sendData(elementName, elementType, date, time, country, city, region) {
+            var pageName = document.title;
+            $.ajax({
+                type: "GET",
+                url: "/registerclickevent",
+                data: {
+                    page_name: pageName,
+                    element_name: elementName,
+                    element_type: elementType,
+                    click_date: date,
+                    click_time: time,
+                    country: country,
+                    city: city,
+                    region: region
+                    
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        // Function to get the current date and time
+        function getCurrentDateTime() {
+            var now = new Date();
+            var date = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            var time = now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
+            return {date: date, time: time};
+        }
+
+        // Capture any click on the page
+        $(document).on("click", function(e) {
+            var dateTime = getCurrentDateTime();
+            var clickedElement = e.target;
+            var elementName = $(clickedElement).closest('[name]').attr('name') || "name not available";
+            var elementType = clickedElement.nodeName;
+
+            // Get the country from the server side
+            $.get("/getcountry/", function(response) {
+                var country = response.country;
+                var city = response.city;
+                var region = response.region;
+                console.log("Country:", country, "City:", city, "Region:", region);
+                sendData(elementName, elementType, dateTime.date, dateTime.time, country, city, region);
+            });
+        });
+    });
+</script>
+
+</body>
+
+</html>

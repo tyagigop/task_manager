@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks - {{ user_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+</head>
+<style>
+    .navbar {
+        background-color: #fff; /* Change as needed */
+        box-shadow: 0 2px 4px rgba(153, 126, 216, 0.1); /* Soft shadow for depth */
+    }
+
+    .navbar-brand {
+        font-size: 1.5em; /* Larger brand name */
+        font-weight: bold;
+        color: #333; /* Change as needed */
+    }
+    /* Styling for the link */
+    .nav-link {
+        position: relative;
+        display: inline-block; /* Ensures the underline aligns correctly */
+        color: #333; /* Text color */
+        text-decoration: none; /* Removes default underline */
+        transition: color 0.3s ease; /* Optional: transition for the text color */
+    }
+
+    /* Pseudo-element for the underline */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px; /* Thickness of the underline */
+        bottom: -3px; /* Position of the underline */
+        left: 0;
+        background-image: linear-gradient(45deg, #ff6e7f, #bfe9ff); /* Gradient colors */
+        transition: width 0.4s ease;
+    }
+
+    /* Hover effect */
+    .nav-link:hover::after {
+        width: 100%; /* Full width on hover */
+    }
+
+
+    /* Mobile view styling */
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url('projects/nav-bar-toggler.png'); /* Optional: Custom icon for the toggler */
+    }
+        /* body {
+        background-color: #f4f7f6;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        min-height: 100vh;
+        margin: 0;
+    } */
+/* html {
+    height: 100%;
+} */
+
+.container-fluid-2 {
+    position: relative;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    height: 100%;
+    flex: 1;
+}
+
+h1 {
+    color: #4a4e69;
+    
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    background-color: #f4f7f6;
+    height: calc(500px - 20px); /* Adjust the 20px to the desired bottom gap */
+    overflow-y: auto; /* Use auto instead of scroll for cleaner look when content is short */
+    margin-bottom: 20px; /* This adds space below the sidebar */
+    box-shadow: #dee2e6;
+}
+
+.sidebar-heading {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0; /* Adjust the top offset as needed */
+    background: #f4f7f6; /* Set a background to ensure text is readable when it overlaps other content */
+    z-index: 100; /* Ensure it stays on top of other elements */
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #1682ef;
+}
+
+/* Main Content Styling */
+table {
+    background-color: #ffffff;
+    border-collapse: collapse;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+table:hover {
+    box-shadow: 0 8px 16px rgba(97, 140, 182, 0.2);
+}
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    text-align: left;
+}
+
+th {
+    background-color: rgb(38, 152, 82)255, 149);
+    color: #ffffff;
+    font-weight: bold;
+    position: sticky;
+    top: 0; /* Set to 0 to stick at the top of the container */
+    background-color: white; /* Optional: to ensure text is readable over any underlying content */
+    z-index: 1; 
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar, .main-content {
+        width: 100%;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+    #pieChartContainer {
+        position: absolute;
+        top: 220px;
+        right: 10px;
+        width: 220px;
+        height: 120px;
+    }
+}
+
+/* Accordion Styling */
+.accordion-header {
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.accordion-content {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+@media (min-width: 768px) {
+    #pieChartContainer {
+        position: absolute;
+        top: 100px;
+        right: 10px;
+        width: 120px;
+        height: 120px;
+    }
+}
+.table-responsive {
+    height: 400px;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+    @media (max-width: 993px) {
+        /* Adjust table and graph layout for mobile screens */
+        
+
+        /* Sidebar styling for mobile */
+        #sidebar {
+            position: fixed; /* Or absolute, depending on your design */
+            width: 250px; /* Adjust as needed */
+            left: -250px; /* Hide sidebar off-screen */
+            transition: left 0.3s; /* Smooth slide-in effect */
+            z-index: 1000; /* Ensure sidebar stays on top of other elements */
+
+        }
+
+        #sidebar.show {
+            left: 0; /* Slide in sidebar */
+        }
+        #pieChartContainer {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+        }
+    }
+    .chart-container {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically if needed */
+    width: 100%; /* Take full width of the parent */
+    height: auto; /* Adjust height as needed */
+}
+.select-wrapper {
+            
+            border-radius: 15px;
+            /* padding: 35px; */
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .container {
+            max-width: 950px;
+            /* margin-top: 50px; */
+            border-radius: 12px;
+            /* padding: 30px; */
+        }
+
+        .task-row {
+            background-color: #ffffff;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .task-row:hover {
+            transform: scale(1.02);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-row .fas {
+            margin-right: 10px;
+            color: #fda085;
+        }
+        .nav-link.selected {
+    
+            color: white;
+            border-bottom: #007bff 2px solid;
+        }
+
+        /* #user-tasks-details { */
+            /* margin-top: 40px; */
+            /* border-radius: 15px; */
+            /* padding: 80px; */
+            /* box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); */
+        /* } */
+        
+        .complete { background-color: #9bda9b; }
+</style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" name="view-navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" name="task-blaze-logo">Task Blaze</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/add_tasks/{{mobile_number}}">Add Tasks</a>
+                    <a class="nav-link" href="/view_tasks/periodic/{{mobile_number}}">Periodic Tasks</a>
+                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link" href="#">{{ user_name }}</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid container-fluid-2 mb-5" name="view-task-main-container" >
+        <h1>{{ user_name }}'s Tasks</h1>
+        <div class="row" name="date-selection">
+            <!-- Sidebar -->
+            
+            <nav id="sidebar" class="col-lg-2 d-md-block ">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center text-muted">
+                    Dates
+                </h6>
+                <div>                    
+                    <ul class="nav">
+                        {% for date in unique_dates %}
+                        <li style="width: auto;">
+                            <a class="nav-link date-filter {% if date_selected == date %}selected{% endif %}" data-date="{{ date }}">{{ date }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- Mobile Date Selection Button -->
+                
+
+            </nav>
+
+            <!-- Main content -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+                    <form method="post" action="/view_tasks/{{mobile_number}}/" class="mb-4" id="dateForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value=""> <!-- Hidden Field for Form Type -->
+                        <div class="form-row align-items-center">
+                            <div class="col-auto">
+                                <label for="date-filter" class="sr-only">Filter by Date:</label>
+                                <input type="text" id="date-filter" name="selected_date" class="form-control" autocomplete="off" value="{{ date_selected }}" placeholder="Select a date">
+                            </div>
+                            <!-- No need for a visible submit button if you're using jQuery to submit the form -->
+                        </div>
+                        <div class="d-lg-none d-md-block text-center">
+                            <button class="btn btn-primary mb-3" type="button" data-toggle="collapse" data-target="#sidebar" aria-expanded="false" aria-controls="sidebar">
+                                Select Date
+                            </button>
+                        </div>
+                    </form>
+                    <div class="container d-flex justify-content-center" name="select-tasks">
+                        <div class="select-wrapper">
+                            {% if tasks|length != 0 %}
+                            {% for task in tasks %}
+                                <!-- get the value of the task_status for the task task_status['task']-->
+                                
+                                
+                                <div class="task-row d-flex justify-content-between align-items-center {% if task.8 == 'Complete' %} complete {% endif %}" onclick="viewTask('{{ task.0 }}')">
+                                    <div class="m-0 font-weight-bold">
+                                        <i class="fas fa-tasks"></i>
+                                        {{task.2}}
+                                    </div>
+                                    <input type="checkbox" class="task-checkbox" data-task="{{task.0}}" data-name="{{task.2}}" onclick="handleCheckboxChange(this, event)" {% if task.8 == 'Complete' %}checked{% endif %}>
+
+                                </div>
+                            {% endfor %}
+                
+                        
+                
+                            {% else %}
+                            <div class="task-row d-flex justify-content-between align-items-center">
+                                <div class="m-0 font-weight-bold">No Tasks Found</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div id="user-tasks-details" class="" name="edit-tasks">
+                    
+                </div>
+                <!-- <div id="user-tasks-details-2" class="">
+                    testing
+                    
+                </div> -->
+            </main>
+
+        </div>
+    </div>
+    
+    
+
+    <!-- Pie Chart Container -->
+    <div id="pieChartContainer" name="pie-chart">
+        <canvas id="pieChart" width="500" height="500"></canvas>
+    </div>
+    <div class="chart-container mb-4" name="bar-graph">
+        <canvas id="myChart" style="max-width:800px"></canvas>
+    </div>
+    
+
+    <footer class="bg-light text-center text-lg-start" name="footer-view-tasks">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2023
+            <a class="text-dark" href="https://taskblaze.tech/view_tasks/{{mobile_number}}">TaskBlaze</a>
+        </div>
+    </footer>
+    
+
+    <!-- Bootstrap JS, Popper.js, and Bootstrap Datepicker scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <!-- ... Your HTML and CSS ... -->
+
+<script>
+        $(document).ready(function () {
+        $('#date-filter').datepicker({
+            format: 'dd-mm-yyyy',
+            endDate: new Date(),
+            autoclose: true,
+            todayHighlight: true
+        });
+        
+
+    // Assuming the dates are wrapped in elements with the class .date-filter
+    //     $('.date-filter').on('click', function () {
+    //         var selectedDate = $(this).data('date');
+    //         $('#date-filter').val(selectedDate); // Set the value of the input
+    //         $('input[name="form_type"]').val('date_filter'); // Set the form type
+    //         $('#date-filter').closest('form').submit(); // Submit the form
+    //     });
+    // });
+        document.getElementById("date-filter").style.display = "none";
+
+        //     $(document).on('click', '.date-filter', function () {
+        //     console.log("Date filter clicked"); // Check if this logs
+        //     var selectedDate = $(this).data('date');
+        //     console.log("Selected date:", selectedDate); // Check the selected date
+
+        //     $('#date-filter').datepicker('setDate', selectedDate);
+        //     $('input[name="form_type"]').val('date_filter');
+        //     // $(this).closest('form').submit();
+        //     $('form').submit();
+        // });
+
+        $(document).on('click', '.date-filter', function () {
+            // console.log("Date filter clicked");
+            var selectedDate = $(this).data('date');
+            // console.log("Selected date:", selectedDate);
+            $('#date-filter').datepicker('setDate', selectedDate);
+            // Ensure the form_type value is set to 'date_filter'
+            $('input[name="form_type"]').val('date_filter');
+
+            // Now submit the form
+            // $('form').submit();
+            $('#dateForm').submit();
+        });
+        
+        
+
+
+    
+
+
+
+        // $(document).ready(function() {
+        //     $('.navbar-toggler').click(function() {
+        //         $('#sidebar').toggleClass('show');
+        //     });
+        // });
+
+
+        var completedCount = {{ completed_count }};
+        var incompleteCount = {{ incomplete_count }};
+
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Completed Tasks', 'Incomplete Tasks'], // Add labels here
+                datasets: [{
+                    data: [completedCount, incompleteCount],
+                    backgroundColor: ['#28a745', '#dc3545'],
+                }],
+            },
+            options: {
+                plugins: {
+                    datalabels: {
+                        color: '#fff',
+                        formatter: function (value, context) {
+                            return context.chart.data.labels[context.dataIndex] + ': ' + value + '%';
+                        },
+                    },
+                },
+                legend: {
+                    display: true, // Set this to true to display the legend
+                    position: 'bottom', // You can change the position of the legend
+                },
+            },
+        });
+
+
+            
+        });
+        const xValues = {{ unique_dates|safe }};
+        
+        // console.log(xValues);
+        const yValues = {{ total_tasks|safe }};
+        const zValues = {{ completed_tasks|safe }};
+
+        const remainingTasks = yValues.map((y, i) => y - zValues[i]);
+
+        new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [
+                {
+                    label: 'Completed Tasks',
+                    data: zValues,
+                    backgroundColor: "rgba(0, 128, 0, 0.7)",
+                    borderColor: "rgba(0, 128, 0, 1)",
+                    borderWidth: 1
+                },
+                {
+                    label: 'Remaining Tasks',
+                    data: remainingTasks,
+                    backgroundColor: "rgba(143, 120, 101, 0.97)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            legend: { display: true },
+            scales: {
+                yAxes: [{
+                    stacked: true,
+                    ticks: { min: 0, max: 16 },
+                    
+                }],
+                xAxes: [{
+                    stacked: true,
+                    
+                }]
+            }
+        }
+    });
+    function toggleTaskDetails(taskId) {
+    var taskDetails = document.getElementById(taskId);
+    if (taskDetails) {
+        taskDetails.classList.toggle('d-none');
+    }
+}
+
+
+    </script>
+<!-- ... Your HTML ... -->
+
+<script>
+    function viewTask(task_id) {
+        // console.log("View task clicked", task_id);
+            $.get(`/view-task-details/${encodeURIComponent(task_id)}`, function(data) {
+                $('#user-tasks-details').html(data);
+            });
+        }
+    
+        // function handleCheckboxChange(checkboxElement) {
+        //     const task_id = checkboxElement.getAttribute('data-task');
+        //     // console.log("Task:", task_id);
+        //     // const name = checkboxElement.getAttribute('data-name');
+        //     const status = checkboxElement.checked ? 'Complete' : 'Incomplete';  // Modify as per your logic
+        //     // console.log("Status:", status);
+
+        //     //     fetch(`/update-task-status`, {
+        //     //         method: 'POST',
+        //     //         headers: {
+        //     //             'Content-Type': 'application/x-www-form-urlencoded'
+        //     //         },
+        //     //         body: `task=${task_id}&status=${status}`
+        //     // }
+
+        // }
+        // function handleCheckboxChange(checkboxElement, event) {
+        //     event.stopPropagation();
+        //     const task_id = checkboxElement.getAttribute('data-task');
+        //     const status = checkboxElement.checked ? 'Complete' : 'Incomplete';  // Modify as per your logic
+        //     console.log("Task:", task_id);
+                    
+        //     fetch(`/update-task-status`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/x-www-form-urlencoded'
+        //         },
+        //         body: `task_id=${encodeURIComponent(task_id)}&status=${encodeURIComponent(status)}`
+        //     }) // Added closing parenthesis here
+            
+        //     // .then(response => {
+        //     //     if (!response.ok) {
+        //     //         throw new Error('Network response was not ok ' + response.statusText);
+        //     //     }
+        //     //     return response.json(); // or response.text() if your server responds with plain text
+        //     // })
+        //     // .then(data => {
+        //     //     console.log('Success:', data);
+        //     // })
+        //     // .catch(error => {
+        //     //     console.error('Error:', error);
+        //     // });
+        // } // Added closing curly brace here
+
+
+        function handleCheckboxChange(checkboxElement, event) {
+    event.stopPropagation(); // Stop event bubbling
+    const task_id = checkboxElement.getAttribute('data-task');
+    const status = checkboxElement.checked ? 'Complete' : 'Incomplete';
+
+    fetch(`/update-task-status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `task_id=${encodeURIComponent(task_id)}&status=${encodeURIComponent(status)}`
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json(); // Assuming the response is JSON
+    })
+    .then(data => {
+        console.log('Success:', data);
+
+        // Set the selected date from the backend into the datepicker
+        var selectedDate = '{{ date_selected }}'; // Use the backend variable
+        $('#date-filter').datepicker('setDate', selectedDate);
+
+        // Set the form_type value
+        $('input[name="form_type"]').val('date_filter');
+
+        // Submit the form
+        $('#dateForm').submit();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function updateTaskDetails(updateElement) {
+    // get form data by id 
+    const formData = new FormData(document.getElementById('myForm'));
+
+    task_id = updateElement.getAttribute('data-task');
+    // console.log(task_id);
+    // console.log("Submitting form data to:", `/update-task-details/${task_id}/`);
+
+    // console.log(formData.get('task_name'));
+
+    fetch(`/update-task-details/${task_id}/`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+
+        // Set the selected date from the backend into the datepicker
+        var selectedDate = '{{ date_selected }}'; // Use the backend variable
+        $('#date-filter').datepicker('setDate', selectedDate);
+
+        // Set the form_type value
+        $('input[name="form_type"]').val('date_filter');
+
+        // Submit the form
+        $('#dateForm').submit();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle errors (e.g., display an error message)
+    });
+}
+
+
+        
+</script>
+<!-- <script>
+    $(document).ready(function() {        
+        // Capture any click on the page
+        $(document).on("click", function(e) {
+            var pageName = document.title;
+            // Get the clicked element
+            var clickedElement = e.target;
+            // Get the name of the clicked element, if available
+            var elementName = $(clickedElement).closest('[name]').attr('name');
+                if (elementName === undefined) {
+                    elementName = "name not available";
+                }
+            // Send the element name to Flask using AJAX
+            $.ajax({
+                type: "GET",
+                url: "/registerclickevent",
+                data: {
+                    page_name: pageName,
+                    element_name: elementName,
+                    element_type: clickedElement.nodeName
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+    });
+
+</script> -->
+<!-- <script>
+    $(document).ready(function() {
+        // Function to send data to server
+        function sendData(elementName, elementType, date, time, country, city) {
+            var pageName = document.title;
+            $.ajax({
+                type: "GET",
+                url: "/registerclickevent",
+                data: {
+                    page_name: pageName,
+                    element_name: elementName,
+                    element_type: elementType,
+                    click_date: date,
+                    click_time: time,
+                    country: country,
+                    city: city
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        // Function to get the current date and time
+        function getCurrentDateTime() {
+            var now = new Date();
+            var date = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            var time = now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
+            return {date: date, time: time};
+        }
+
+        // Function to get user's location
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var long = position.coords.longitude;
+
+                    // Use an API like IP Geolocation API to get country and city from lat, long
+                    // ...
+
+                }, function() {
+                    console.log("Geolocation is not supported by this browser.");
+                });
+            } else {
+                console.log("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Capture any click on the page
+        $(document).on("click", function(e) {
+            var dateTime = getCurrentDateTime();
+            var clickedElement = e.target;
+            var elementName = $(clickedElement).closest('[name]').attr('name') || "name not available";
+            var elementType = clickedElement.nodeName;
+
+            // Assume default values for country and city
+            var country = "Not available";
+            var city = "Not available";
+
+            getUserLocation(); // This will update country and city based on user's location
+
+            sendData(elementName, elementType, dateTime.date, dateTime.time, country, city);
+        });
+    });
+</script> -->
+<script>
+    $(document).ready(function() {
+        // Function to send data to server
+        function sendData(elementName, elementType, date, time, country, city, region) {
+            var pageName = document.title;
+            $.ajax({
+                type: "GET",
+                url: "/registerclickevent",
+                data: {
+                    page_name: pageName,
+                    element_name: elementName,
+                    element_type: elementType,
+                    click_date: date,
+                    click_time: time,
+                    country: country,
+                    city: city,
+                    region: region
+                    
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        // Function to get the current date and time
+        function getCurrentDateTime() {
+            var now = new Date();
+            var date = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            var time = now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
+            return {date: date, time: time};
+        }
+
+        // Capture any click on the page
+        $(document).on("click", function(e) {
+            var dateTime = getCurrentDateTime();
+            var clickedElement = e.target;
+            var elementName = $(clickedElement).closest('[name]').attr('name') || "name not available";
+            var elementType = clickedElement.nodeName;
+
+            // Get the country from the server side
+            $.get("/getcountry/", function(response) {
+                var country = response.country;
+                var city = response.city;
+                var region = response.region;
+                console.log("Country:", country, "City:", city, "Region:", region);
+                sendData(elementName, elementType, dateTime.date, dateTime.time, country, city, region);
+            });
+        });
+    });
+</script>
+
+
+</body>
+
+</html>
+

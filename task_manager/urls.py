@@ -22,18 +22,37 @@ from django.conf import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", bot, name="bot"),
+    # path("", bot, name="bot"),
     path("bot/", bot, name="bot"),
-    path('add_task/<str:mobile>/', add_task, name='add_task'),
+    path("", home, name="home"),
+    path('add_task/<str:mobile>/', add_task2, name='add_task2'),
     path('add_tasks/<str:mobile>/', add_task2, name='add_task2'),
     path('view_tasks/<str:mobile>/', view_tasks, name='view_tasks'),
-    path('update_notes/', update_notes, name='update_notes'),
-    path('update_task/', update_task, name='update_task'),
+    path('save_tasks/<str:mobile>/', save_tasks, name='save_tasks'),
+    path('view_users/', view_users, name='view_users'),
+    path('view_logs/<int:user_id>/', view_logs, name='view_logs'),
+    path('view_tasks/periodic/<str:mobile>/', view_periodic_tasks, name='view_periodic_tasks'),
+    path('feedback/', feedback, name='feedback'),
+    path('contact/', contact, name='contact'),
+    path('view_tasks2/<str:mobile>/', view_tasks2, name='view_tasks2'),
+    path('view-task-details/<int:task_id>/', view_task_details, name='view_task_details'),
+    path('update-task-details/<int:task_id>/', update_task_details, name='update_task_details'),
+    path('delete-task/<int:task_id>/', delete_task, name='delete_task'),
+    path('update-task-status', update_task_status, name='update_task_status'),
+    path('registerclickevent/', save_click_event, name='save_click_event'),
+    path('getcountry/', get_country, name='get_country'),
+    path('view-click-events/', view_ClickEvent, name='view_ClickEvent'),
+        
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+# urls.py
+from django.conf.urls import handler404
+
+handler404 = 'task.views.custom_404'  # Replace 'myapp.views.custom_404' with your view
 
 
-# from django.urls import re_path
+
+
 
 # # from django.conf.urls import url
 # # from django.conf.urls.static import static

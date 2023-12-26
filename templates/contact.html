@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* CSS styles will go here */
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f7;
+    /* padding: 20px; */
+}
+
+.contact-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 50px;
+}
+
+.form-control, .btn-contact {
+    border-radius: 4px;
+}
+
+.btn-contact {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.btn-contact:hover {
+    background-color: #218838;
+}
+
+h2 {
+    color: #333;
+}
+.navbar {
+        background-color: #fff; /* Change as needed */
+        box-shadow: 0 2px 4px rgba(153, 126, 216, 0.1); /* Soft shadow for depth */
+    }
+
+    .navbar-brand {
+        font-size: 1.5em; /* Larger brand name */
+        font-weight: bold;
+        color: #333; /* Change as needed */
+    }
+    /* Styling for the link */
+    .nav-link {
+        position: relative;
+        display: inline-block; /* Ensures the underline aligns correctly */
+        color: #333; /* Text color */
+        text-decoration: none; /* Removes default underline */
+        transition: color 0.3s ease; /* Optional: transition for the text color */
+    }
+
+    /* Pseudo-element for the underline */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px; /* Thickness of the underline */
+        bottom: -3px; /* Position of the underline */
+        left: 0;
+        background-image: linear-gradient(45deg, #ff6e7f, #bfe9ff); /* Gradient colors */
+        transition: width 0.4s ease;
+    }
+
+    /* Hover effect */
+    .nav-link:hover::after {
+        width: 100%; /* Full width on hover */
+    }
+
+
+    /* Mobile view styling */
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url('projects/nav-bar-toggler.png'); /* Optional: Custom icon for the toggler */
+    }
+    .footer{
+            background-color: #302c37;
+            color: white;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            padding: 2em;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Task Blaze</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+
+                    <!-- <a class="nav-link" href="skills">Skills</a> -->
+                    <!-- <a class="nav-link" href="projects">Projects</a> -->
+                    <!-- <a class="nav-link" href="achievements">Achievements</a> -->
+                    <a class="nav-link" href="https://wa.me/+919643832733?text=Add%20tasks" target="_blank">Add Task</a>
+                    <a class="nav-link" href="https://wa.me/+919643832733?text=View%20tasks" target="_blank">View Tasks</a>
+
+                    <a class="nav-link" href="/contact">Contact</a>
+                    <!-- <a class="nav-link" href="about">About</a>  -->
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form class="contact-form" action="/contact/" method="post">
+                    <h2 class="text-center mb-4">Contact Us</h2>
+                    <div class="form-group">
+                        <label for="name">Your Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Your Mobile Number/Email:</label>
+                        <input type="email" class="form-control" id="email" name="mobile" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message:</label>
+                        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-contact" style="width: 100%;">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer class="footer mt-5">
+        <div class="container text-center">
+            <span class="text-muted">TaskBlaze &copy; 2023</span>
+            <p class="text-muted">Made with ❤️ by <a href="https://www.reminthealth.com">Remint Health Team</a></p>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

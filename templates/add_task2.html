@@ -1,64 +1,324 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Task</title>
-    <!-- Add Bootstrap CSS link -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         body {
-            padding: 20px;
+            background-color: #f4f7f6;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
-
+        html {
+            height: 100%;
+        }
+        .container {
+            position: relative;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            flex: 1;
+        }
         h1, h2 {
             color: #007bff;
         }
-
-        .task {
-            margin-bottom: 20px;
+        
+        
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
         }
+        .btn-success, .btn-primary {
+            background-image: linear-gradient(to right, #56ab2f, #a8e063);
+            border: none;
+            border-radius: 5px;
+        }
+        .btn-success:hover, .btn-primary:hover {
+            background-image: linear-gradient(to right, #a8e063, #56ab2f);
+        }
+        .footer {
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        .form-control {
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .modal{
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
+        .custom-modal-style {
+    background: #f7f7f7; /* Light grey background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+.modal-header {
+    background: #4a76a8; /* A calming blue header */
+    color: white; /* White text for contrast */
+}
+
+.modal-title {
+    font-weight: bold; /* Bold title */
+}
+
+.modal-body {
+    color: #333; /* Darker text for readability */
+    line-height: 1.5; /* Improved line spacing */
+}
+
+.modal-footer {
+    background: #e4e6e8; /* Light footer background for separation */
+}
+.navbar {
+        background-color: #fff; /* Change as needed */
+        box-shadow: 0 2px 4px rgba(153, 126, 216, 0.1); /* Soft shadow for depth */
+    }
+
+    .navbar-brand {
+        font-size: 1.5em; /* Larger brand name */
+        font-weight: bold;
+        color: #333; /* Change as needed */
+    }
+    /* Styling for the link */
+    .nav-link {
+        position: relative;
+        display: inline-block; /* Ensures the underline aligns correctly */
+        color: #333; /* Text color */
+        text-decoration: none; /* Removes default underline */
+        transition: color 0.3s ease; /* Optional: transition for the text color */
+    }
+
+    /* Pseudo-element for the underline */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px; /* Thickness of the underline */
+        bottom: -3px; /* Position of the underline */
+        left: 0;
+        background-image: linear-gradient(45deg, #ff6e7f, #bfe9ff); /* Gradient colors */
+        transition: width 0.4s ease;
+    }
+
+    /* Hover effect */
+    .nav-link:hover::after {
+        width: 100%; /* Full width on hover */
+    }
+
+
+    /* Mobile view styling */
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url('projects/nav-bar-toggler.png'); /* Optional: Custom icon for the toggler */
+    }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-4 mb-4">Define Your Tasks</h1>
-
-        <!-- Form for entering mobile number -->
-
-        <h5>Hey {{user_name}}. Add your today's tasks</h5>
-
-        <!-- Form for adding tasks -->
-        <form method="post">
-            {% csrf_token %}
-
-            <!-- Task input fields -->
-            <div id="tasks">
-                <div class="task form-row">
-                    <div class="col-md-12 mb-3">
-                        <label for="task_name">Task Name: [ TASK_NAME - DUE_TIME ,] Each task is comma separated</label>
-                        <textarea type="text" rows="10" class="form-control" name="task_name" placeholder="Eg. : Writing a blog - 18:06 , Playing BGMI - 19:45," required></textarea>
-                    </div>
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" name="navbar-add-task">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" name="Task-blaze-logo">Task Blaze</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link" href="/view_tasks/{{mobile_number}}">View Tasks</a>
+                    <a class="nav-link" href="/view_tasks/periodic/{{mobile_number}}">Periodic Tasks</a>
+                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link" href="#">{{ user_name }}</a>
                 </div>
             </div>
-            <hr>
+        </div>
+    </nav>
+    <div class="container" name="add-task-container">
+        <div class="card my-5">
+            <div class="card-body">
+                <h1 class="card-title text-center">Define Your Tasks</h1>
+                <h5 class="text-muted text-center">Hey {{user_name}}. Add your today's tasks</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div id="tasks" class="my-4" name="add-task-input-box">
+                        <div class="task form-row">
+                            <div class="col-md-12 mb-1">
+                                <label for="task_name">Task Name and Due Time: Enter each task followed by its due time. Use a new line for each task.</label>
+                                <textarea type="text" rows="6" class="form-control" name="task_name" placeholder="Eg. : Writing a blog - 18:06 &#10;Playing BGMI - 19:45" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="check-box-div" name="accountability-partner">
+                        <input type="checkbox" name="accountability-partner" id="accountability-partner" value="accountability-partner">
+                        <label for="accountability-partner">Do you want to add an accountability partner?</label>
+                        <a href="#" style="font-style: italic; text-decoration: none; color: blue;" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            Know more
+                        </a>
+                        
+  
+                        <!-- Modal -->  
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content custom-modal-style">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Accountability Partner</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>An accountability partner is more than just a task manager; they are a catalyst for change and progression. By pairing you with an experienced partner, we aim to offer a supportive relationship that focuses on setting and achieving personal and professional goals. Your partner will work closely with you to understand your objectives, establish realistic plans, and set achievable milestones.</p>
+                                        
+                                        <p>Accountability partners provide a unique blend of guidance, motivation, and support. They are not just there to remind you of your tasks but also to help you navigate challenges and celebrate your successes. Their role is to keep you focused, offer constructive feedback, and encourage you to step out of your comfort zone, which is often where the most significant growth happens.</p>
+                        
+                                        <p>Moreover, accountability partners can help you develop better habits and strategies for time management and productivity. They can provide insights into different approaches for task management, helping you find what works best for you. This personalized approach ensures that the path you're on is tailored to your specific needs and learning style.</p>
+                        
+                                        <p>In summary, our Accountability Partner Program is designed to provide you with a dedicated companion in your journey towards personal and professional success. By combining regular check-ins, collaborative planning, and ongoing encouragement, your partner will play a pivotal role in helping you turn your aspirations into achievements.</p>
+                                    </div>
+                                    <div class="modal-footer text-center">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
 
-            <!-- Button to add more tasks dynamically -->
 
-            <!-- Submit button -->
-            <button type="submit" class="btn btn-success mb-3">Submit Tasks</button>
-            <a href = "https://taskblaze.tech/view_tasks/{{mobile_number}}" class="btn btn-primary mb-3">View Tasks</a>
-        </form>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success mb-3">Submit Tasks</button>
+                        <a href = "https://taskblaze.tech/view_tasks/{{mobile_number}}" class="btn btn-primary mb-3">View Tasks</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+    <!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true" name="confirmation-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Submission Received</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Our accountability partner will connect with you soon through WhatsApp.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- Add Bootstrap JS and Popper.js scripts -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <footer class="footer mt-auto py-3 bg-dark text-white" name="add-task-footer">
+        <div class="text-center">
+            © 2023
+            <a class="text-light" href="https://taskblaze.tech/view_tasks/{{mobile_number}}">TaskBlaze</a>
+        </div>
+    </footer>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var form = document.querySelector("form");
+            var checkBox = document.getElementById("accountability-partner");
+            var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            var shouldSubmitForm = false;
+    
+            // Event listener for form submission
+            form.addEventListener("submit", function(event) {
+                if (checkBox.checked && !shouldSubmitForm) {
+                    event.preventDefault(); // Prevent form from submitting immediately
+                    confirmationModal.show(); // Show the confirmation modal
+                }
+            });
+    
+            // Event listener for the modal's 'OK' button
+            document.getElementById('confirmationModal').addEventListener('hide.bs.modal', function () {
+                if (checkBox.checked) {
+                    shouldSubmitForm = true;
+                    form.submit(); // Submit the form after closing the modal
+                }
+            });
+        });
+    </script>
 
+<script>
+    $(document).ready(function() {
+        // Function to send data to server
+        function sendData(elementName, elementType, date, time, country, city, region) {
+            var pageName = document.title;
+            $.ajax({
+                type: "GET",
+                url: "/registerclickevent",
+                data: {
+                    page_name: pageName,
+                    element_name: elementName,
+                    element_type: elementType,
+                    click_date: date,
+                    click_time: time,
+                    country: country,
+                    city: city,
+                    region: region
+                    
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+        }
 
+        // Function to get the current date and time
+        function getCurrentDateTime() {
+            var now = new Date();
+            var date = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+            var time = now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
+            return {date: date, time: time};
+        }
+
+        // Capture any click on the page
+        $(document).on("click", function(e) {
+            var dateTime = getCurrentDateTime();
+            var clickedElement = e.target;
+            var elementName = $(clickedElement).closest('[name]').attr('name') || "name not available";
+            var elementType = clickedElement.nodeName;
+
+            // Get the country from the server side
+            $.get("/getcountry/", function(response) {
+                var country = response.country;
+                var city = response.city;
+                var region = response.region;
+                console.log("Country:", country, "City:", city, "Region:", region);
+                sendData(elementName, elementType, dateTime.date, dateTime.time, country, city, region);
+            });
+        });
+    });
+</script>
+    
+    
 </body>
 </html>

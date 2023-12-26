@@ -3,19 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager</title>
+    <title>Task Blaze</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <style>
-        body {
-            padding-top: 60px;
+        .body{
+            padding-top: 70px;
+
+            max-width: 100%;
+            overflow-x: hidden;
         }
+        .container-background {
+            background-image: url("https://hackspirit.com/wp-content/uploads/2023/08/If-you-recognize-these-signs-youre-more-than-happy-being-single.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* background-attachment: fixed; */
+            height: 85vh;
+            width: auto;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            /* margin-top: 10px; */
+            margin-right: 0px !important;
+        }
+        .get-started {
+            margin-top: 2em;
+            width: 22%;
+            background-color: azure;
+            border-radius: 0.5em;
+            padding: 1em;
+            box-shadow: #c4cbd3 0px 0px 10px 0px;
+            position: absolute;
+            right: 90px;
+            top: 180px;
+            background-image: url("https://images.unsplash.com/photo-1625225230517-7426c1be750c?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGZvcm18ZW58MHx8MHx8fDA%3D");
+            background-size: cover;
+            background-position: 100%;
+
+        }
+        .welcome-note{
+            position: absolute;
+            left: 190px;
+            top: 100px;
+        }
+
+        .btn-custom {
+            background-color: #4b7098;
+            border-color: #007bff;
+            color: white;
+            padding: 0.5em 1em;
+            border-radius: 0.3em;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        .btn-custom:hover {
+            background-color: #129569;
+        }
+        .feature-section{
+            /* background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRnGHLHG0_WG8LlTn-YESfT2lwNqDzb-A5C7A&usqp=CAU"); */
+            background-color: #c4cbd3;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: auto;
+            width: 100%;
+            align-items: center;
+            position: relative;
+            border-radius: 2px 2px 2px 2px;
+        }
+        .card-1{
+            background-color: azure;
+            padding: 3em;
+            margin: 1em;
+        }
+        .text-features{
+            font-size: 0.9em;
+            text-align: justify;
+        }
+        .header-features{
+            color: #4b7098;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .waiting-heading{
+            font-size: 2em;
+            color: #4b7098;
+            font-weight: bold;
+            margin-top: 1em;
+            /* rotate: -90deg; */
+            text-align: center;
+        }
+        .wating-features{
+            background-color: #c4cbd3;
+            height: auto;
+            width: 100%;
+            align-items: center;
+            position: relative;
+            border: 1px solid #4b7098;
+            border-radius: 2px 2px 2px 2px;
+        }
+        /* .navbar {
+            background-color: #4b7098;
+            width: 100%;
+        } */
+        .reviews{
+            background-color: #c4cbd3;
+            height: auto;
+            width: 100%;
+            align-items: center;
+            position: relative;
+            border-radius: 2px 2px 2px 2px;
+            padding:2em 2em 0 2em;
+        }
+        .feedback{
+            background-color: #c8dbef;
+            height: auto;
+            width: 100%;
+            align-items: center;
+            position: relative;
+            border-radius: 2px 2px 2px 2px;
+            padding:2em 2em 0 2em;
+        }
+        .feedback-row{
+            background-color: azure;
+            padding: 3em;
+            margin: 1em;
+        }
+        .feedback-child{
+            margin: 0;
+            align-items: center;
+        }
+        .feedback-features{
+            text-align: center;
+            height: auto;
+        }
+        .footer{
+            background-color: #302c37;
+            color: white;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            padding: 2em;
+        }
+        @media(max-width: 768px){
+            .get-started{
+                width: 80%;
+                position: relative;
+                left: 40px;
+                top: 200px;
+                margin-top: 0;
+                background-position: 100% 100%;
+            }
+            .welcome-note{
+                position: relative;
+                left: 0;
+                top: 60px;
+                padding: 5px;
+            }
+        }
+        .navbar {
+        background-color: #fff; /* Change as needed */
+        box-shadow: 0 2px 4px rgba(153, 126, 216, 0.1); /* Soft shadow for depth */
+    }
+
+    .navbar-brand {
+        font-size: 1.5em; /* Larger brand name */
+        font-weight: bold;
+        color: #333; /* Change as needed */
+    }
+    /* Styling for the link */
+    .nav-link {
+        position: relative;
+        display: inline-block; /* Ensures the underline aligns correctly */
+        color: #333; /* Text color */
+        text-decoration: none; /* Removes default underline */
+        transition: color 0.3s ease; /* Optional: transition for the text color */
+    }
+
+    /* Pseudo-element for the underline */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px; /* Thickness of the underline */
+        bottom: -3px; /* Position of the underline */
+        left: 0;
+        background-image: linear-gradient(45deg, #ff6e7f, #bfe9ff); /* Gradient colors */
+        transition: width 0.4s ease;
+    }
+
+    /* Hover effect */
+    .nav-link:hover::after {
+        width: 100%; /* Full width on hover */
+    }
+
+
+    /* Mobile view styling */
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url('projects/nav-bar-toggler.png'); /* Optional: Custom icon for the toggler */
+    }
+
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Task Manager</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" name="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" name="task_blaze_logo">Task Blaze</a>
+            <button class="navbar-toggler" name="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+
+                    <!-- <a class="nav-link" href="skills">Skills</a> -->
+                    <!-- <a class="nav-link" href="projects">Projects</a> -->
+                    <!-- <a class="nav-link" href="achievements">Achievements</a> -->
+                    <!-- <a class="nav-link" href="https://wa.me/+919643832733?text=Add%20tasks" target="_blank">Add Task</a>
+                    <a class="nav-link" href="https://wa.me/+919643832733?text=View%20tasks" target="_blank">View Tasks</a> -->
+
+                    <a class="nav-link" href="/contact">Contact</a>
+                    <!-- <a class="nav-link" href="about">About</a>  -->
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Task Blaze</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,46 +253,250 @@
                 </li>
             </ul>
         </div>
-    </nav>
-
-    <!-- Page Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="mt-5">Welcome to Task Manager</h1>
-                <p class="lead">Your one-stop solution for managing tasks efficiently.</p>
+    </nav> -->
+    <div class="container-background" name="home-page-background">
+        <div class="">
+            <div class="welcome-note" name="welcome-note">
+                <h1 class="mt-5">Conversational AI based Task manager</h1>
+                <p class="lead" style="color: aliceblue;">Plan, manage and finish your tasks through whatsapp conversations.</p>
+            </div>
+            <div class="get-started text-center">
+                <h2 name="get-started">Get Started</h2>
+                <form id="addTaskForm">
+                    <input type="text" class="form-control" id="nameInput" placeholder="Enter Your Name" aria-label="Name input">
+                    <!-- <input type="text" class="form-control mt-3" id="mobileInput" placeholder="Enter Your Mobile Number" aria-label="Mobile input"> -->
+                    <button type="submit" class="btn btn-custom mt-3">Getting Started</button>
+                </form>
+                
             </div>
         </div>
-
-        <!-- Carousel -->
+    </div>
+    <div class="feature-section" name="feature-section">
+        <h3 class="text-center p-5">Our Top Features</h3>
+        <div class="row justify-content-center">
+            <div class="card-1 col-sm-6 col-md-3" name="feature-card-1">
+                <div class="card-features">
+                    <h5 class="header-features">Easy task management</h5>
+                    <p class="text-features">
+                        Task addition is as simple as writing your tasks on a page. Once the tasks get defined you will be reminded to finish your tasks through whatsapp messages. In case you choose an accountability partner, they will help you plan your tasks, and review your tasks at the end of the day.
+                       </p>
+                    <p class="text-features">
+                        In case you choose an accountability partner, they will help you plan your tasks, and review your tasks at the end of the day.
+                    </p>
+                </div>
+            </div>
+            <div class="card-1 col-sm-6 col-md-3" name="feature-card-2">
+                <div class="card-features">
+                    <h5 class="header-features">Conversational task manager</h5>
+                    <p class="text-features">
+                        Our task manager is conversational in nature which means you can talk to our task manager to help improve your productivity. 
+                    <p class="text-features">
+                        We are currently using GPT-3 for the conversations and trying to make our task manager intelligent enough to help you plan and execute your daily tasks.
+                    </p>
+                </div>
+            </div>
+            <div class="card-1 col-sm-6 col-md-3" name="feature-card-3">
+                <div class="card-features">
+                    <h5 class="header-features">Trained accountability partners</h5>
+                    <p class="text-features">
+                        You can choose to work with an accountability partner if you are struggling to plan or execute. Conditions like ADHD, substance use, anxiety and even stress can reduce productivity and increase procrastination.
+                     </p>
+                    <p class="text-features">
+                        Our accountability partners are trained to work with someone who is struggling to create right plans and execute the most important tasks of the day. They will help you get better at finishing your most important tasks and ultimately achieving your life goals. 
+                    </p>
+                </div>
+            </div>
+            
+        </div>
+        <!-- Additional features would go here -->
+    </div>
+    <div class="waiting-features p-5" name="Upcoming-features" id="upcoming-features">
+        <!-- <h3 class="text-center p-5">Upcoming Features</h3> -->
         <div class="row">
-            <div class="col-lg-12">
-                <div id="myCarousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner">
-                        <div class="carousel-item active">
-                            <img class="d-block w-100" src="https://via.placeholder.com/1200x400" alt="First slide">
-                        </div>
-                        <!-- Add more carousel items as needed -->
+            <div class="col-sm-6 col-md-4 waiting-heading">
+                Coming Soon
+            </div>
+            <div class="col-sm-6 col-md-8">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 card-features">
+                        <h5 class="header-features">Enhanced Collaboration Tools</h5>
+                        <p class="text-features">
+                            Advanced collaboration tools for effective team interaction, including real-time chat, task delegation, and collaborative editing.
+                        </p>
                     </div>
-                    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                    </a>
+                    <div class="col-sm-6 col-md-4 card-features">
+                        <h5 class="header-features">Improved Mobile Experience</h5>
+                        <p class="text-features">
+                            An enhanced mobile app with full-feature accessibility, task management, and offline functionality.
+                        </p>
+
+                        
+                    </div>
+                    <!-- Customizable Dashboard -->
+                    <div class="col-sm-6 col-md-4 card-features">
+                        <h5 class="header-features">Customizable Dashboard</h5>
+                        <p class="text-features">
+                            Personalize your workspace with a new customizable dashboard for tailored information access.
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="reviews" name="reviews">
+        <h3 class="text-center pb-3">What Our Users Say</h3>
+        <div class="row">
+            <!-- Review for Adding Tasks -->
+            <div class="col-sm-6 col-md-3">
+                <div class="card-features">
+                    <h5 class="header-features">Rashmi Gupta on Adding Tasks</h5>
+                    <p class="text-features">
+                        "Adding tasks in this app is a breeze! The interface is intuitive and makes it super easy to jot down my tasks quickly. It has truly simplified my daily planning process."
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Review for Modifying Tasks -->
+            <div class="col-sm-6 col-md-3">
+                <div class="card-features">
+                    <h5 class="header-features">Mayank Yadav on Modifying Tasks</h5>
+                    <p class="text-features">
+                        "I love how effortlessly I can modify my tasks. Changing deadlines or details is just a few clicks away, which is essential for my dynamic work environment."
+                    </p>
+                </div>
+            </div>
+    
+            <!-- Review for Creating Tasks -->
+            <div class="col-sm-6 col-md-3">
+                <div class="card-features">
+                    <h5 class="header-features">Hemant Tyagi on Creating Tasks</h5>
+                    <p class="text-features">
+                        "Creating tasks with this app has helped me organize my day-to-day activities more effectively. The ability to categorize and set priorities for each task is a game-changer for my productivity."
+                    </p>
+                </div>
+            </div>
+    
+            <!-- Review for Timely Reminders -->
+            <div class="col-sm-6 col-md-3">
+                <div class="card-features">
+                    <h5 class="header-features">Mohit Sharma on Timely Reminders</h5>
+                    <p class="text-features">
+                        "The timely reminders have been a lifesaver. I no longer worry about missing deadlines or forgetting important tasks. This feature keeps me on top of everything, every day."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="feedback">
+        <h3 class="text-center pb-3">Your feedback is Important to us.</h3>
+        <div class="row feedback-child justify-content-center">
+            <div class="col-sm-6 col-md-6 feedback-row" name="feedback-form">
+                <div class="feedback-features">
+                    <h5 class="header-features">Give Feedback</h5>
+                    <p class="text-features">
+                        We are constantly working to improve our app. Your feedback is important to us. Please take a moment to share your thoughts with us. 
+                    </p>
+                    <p class="text-features">
+                        Suggest some new features which you would like to see in our tool.
+                    </p>
+                    <a href="/feedback" type="btn" class="btn btn-custom mt-3">Give Feedback</a>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6 feedback-row" name="contact-form">
+                <div class="feedback-features">
+                    <h5 class="header-features">Contact Us</h5>
+                    <p class="text-features">
+                        Have a question or concern? We're here to help. Contact us at
+                    </p>
+                    <a href="/contact" type="btn" class="btn btn-custom mt-3">Contact Us</a>
                 </div>
             </div>
         </div>
 
-        <!-- Additional Content Goes Here -->
     </div>
+    <footer class="footer" name="footer">
+        <div class="container text-center">
+            <span class="text-muted">TaskBlaze &copy; 2023</span>
+            <p class="text-muted">Made with ❤️ by <a href="https://www.reminthealth.com">Remint Health Team</a></p>
+        </div>
+    </footer>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        document.getElementById('addTaskForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+    
+            var name = document.getElementById('nameInput').value;
+            // var mobile = document.getElementById('mobileInput').value;
+            var whatsappNumber = '+919643832733'; // Replace 'xyz' with the actual number
+    
+            // Construct the WhatsApp message URL
+            var whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hello, I am ${encodeURIComponent(name)} and I want to try the Task Blaze features.`;
+    
+            // Open WhatsApp URL
+            window.open(whatsappUrl, '_blank');
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Function to send data to server
+            function sendData(elementName, elementType, date, time, country, city, region) {
+                var pageName = document.title;
+                $.ajax({
+                    type: "GET",
+                    url: "/registerclickevent",
+                    data: {
+                        page_name: pageName,
+                        element_name: elementName,
+                        element_type: elementType,
+                        click_date: date,
+                        click_time: time,
+                        country: country,
+                        city: city,
+                        region: region
+                        
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+    
+            // Function to get the current date and time
+            function getCurrentDateTime() {
+                var now = new Date();
+                var date = now.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+                var time = now.toTimeString().split(' ')[0]; // Format: HH:MM:SS
+                return {date: date, time: time};
+            }
+    
+            // Capture any click on the page
+            $(document).on("click", function(e) {
+                var dateTime = getCurrentDateTime();
+                var clickedElement = e.target;
+                var elementName = $(clickedElement).closest('[name]').attr('name') || "name not available";
+                var elementType = clickedElement.nodeName;
+    
+                // Get the country from the server side
+                $.get("/getcountry/", function(response) {
+                    var country = response.country;
+                    var city = response.city;
+                    var region = response.region;
+                    // console.log("Country:", country, "City:", city, "Region:", region);
+                    sendData(elementName, elementType, dateTime.date, dateTime.time, country, city, region);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

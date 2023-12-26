@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Click Data</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .header {
+            background: #4CAF50;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        .filter-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .filter-form label {
+            margin-right: 10px;
+        }
+        .filter-form input[type="date"],
+        .filter-form select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 20px;
+        }
+        .filter-form input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .filter-form input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .data-table tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>User Click Data</h1>
+        </div>
+
+        <div class="filter-form">
+            <form action="" method="get">
+                <label for="country">Country:</label>
+                <select name="country" id="country">
+                    <option value="">Select Country</option>
+                    {% for item in countries %}
+                    <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date">
+
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date">
+
+                <input type="submit" value="Filter">
+            </form>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Page Name</th>
+                    <th>Section Name</th>
+                    <th>Element Name</th>
+                    <th>Element Type</th>
+                    <th>Time Spent</th>
+                    <th>Click Date</th>
+                    <th>City</th>
+                    <th>Region</th>
+                    <th>Country</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in query %}
+                <tr>
+                    <td>{{ item.page_name }}</td>
+                    <td>{{ item.page_section_name }}</td>
+                    <td>{{ item.clicked_element_name }}</td>
+                    <td>{{ item.clicked_element_type }}</td>
+                    <td>{{ item.time_spent_on_page }}</td>
+                    <td>{{ item.click_date }}</td>
+                    <td>{{ item.city }}</td>
+                    <td>{{ item.region }}</td>
+                    <td>{{ item.country }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -8,7 +8,7 @@ import pytz
 import openai
 
 
-openai.api_key = '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'
+openai.api_key = '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'
 
 
 # client = OpenAI(api_key='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')
@@ -21,19 +21,20 @@ from celery import shared_task
 
 
 account_sid = 'AC350f7216d74983430088fa7b2f6e2662'
-auth_token = '84cd88946166bc0183150148e382f6fc'
+auth_token = 'd3bf470287a686ed42050a37dd616967'
 client = Client(account_sid, auth_token)
 
-conn = sqlite3.connect('usertasks.db',check_same_thread=False)
+
 
 def handle_user_response(request, user_number, user_message):
+    conn = sqlite3.connect('usertasks.db',check_same_thread=False)
     print(user_message)
     original_message = user_message
     user_message = user_message.lower()
     if user_message == 'add task' or user_message == 'add' or user_message == 'add tasks':
         link = "https://taskblaze.tech/add_tasks/"+user_number[12:]
         client.messages.create(
-            from_='whatsapp:+919643832733',
+            from_='whatsapp:+917618207974',
             body=link,
             to=user_number
         )
@@ -50,7 +51,7 @@ def handle_user_response(request, user_number, user_message):
         c.close()
         if not tasks:
             client.messages.create(
-                from_='whatsapp:+919643832733',
+                from_='whatsapp:+917618207974',
                 body="You don't have any tasks for today.",
                 to=user_number
             )
@@ -66,7 +67,6 @@ def handle_user_response(request, user_number, user_message):
                 incomplete_tasks += 1
             else:
                 completed_tasks += 1
-
             status_icon = "✅" if task_status == 'Complete' else "❌"
             message += f"*{task_name}*\nTime: {task_time}\nStatus: {status_icon} {task_status}\n\n"
 
@@ -76,19 +76,19 @@ def handle_user_response(request, user_number, user_message):
         message += f"🚀 You have completed {completion_percentage:.2f}% of your tasks for today.\n\n"
         message += f"👉 You View Tasks Here :\n\n{link}"
         client.messages.create(
-            from_='whatsapp:+919643832733',
+            from_='whatsapp:+917618207974',
             body=message,
             to=user_number
         )
     elif user_message == 'help':
         client.messages.create(
-            from_='whatsapp:+919643832733',
+            from_='whatsapp:+917618207974',
             body="Type 'add task' to add a task. Type 'view tasks' to view your tasks.",
             to=user_number
         )
     elif user_message == 'hi' or user_message == 'hello' or user_message == 'hey' or user_message == 'hii' or user_message == 'hiii' or user_message == 'hiiii' or user_message == 'hiiiii' or user_message == 'hiiiiii' or user_message == 'hiiiiiii' or user_message == 'hiiiiiiii' or user_message == 'hiiiiiiiii' or user_message == 'hiiiiiiiiii' or user_message == 'hiiiiiiiiiii' or user_message == 'hiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiiiii' or user_message == 'hiiiiiiiiiiiiiiiiiii':
         client.messages.create(
-            from_='whatsapp:+919643832733',
+            from_='whatsapp:+917618207974',
             body="Hey! Type 'help' to know more.",
             to=user_number
         )
@@ -111,7 +111,7 @@ def handle_user_response(request, user_number, user_message):
             # Handle the case where there are no reminders
             task_id = None  # or raise an exception, return a default value, etc.
 
-        if task_id is not None:
+        if task_id is not None:        
             if response == 'Not Done':
                 c.execute("SELECT * FROM Tasks WHERE task_id = ?", (task_id,))
                 task = c.fetchone()
@@ -125,6 +125,26 @@ def handle_user_response(request, user_number, user_message):
                 task_time += timedelta(hours=2)
                 print(type(task_time))
                 task_time = task_time.strftime('%H:%M')
+                if task[10] != 'Once':
+                    if task[11] != None:
+                        task_time = task[11]
+                        task_time = timezone.datetime.strptime(task_time, '%H:%M')
+                        task_time += timedelta(hours=2)
+                        task_time = task_time.strftime('%H:%M')
+                        
+                    c.execute("UPDATE Tasks SET temp_time = ? WHERE task_id = ?", (task_time, task_id))
+                    conn.commit()
+                    print('task time', task_time,'updated')
+                    c.execute("DELETE FROM \"Reminder Responses\" WHERE user_id = ? AND task_id = ?", (user_id, task_id))
+                    conn.commit()
+                    c.close()
+                    msg = "Okay. I will remind you again to complete "+task_name+" at "+task_time+"."
+                    client.messages.create(
+                        from_='whatsapp:+917618207974',
+                        body=msg,
+                        to=user_number
+                    )
+                    return
                 print(type(task_time))
                 c.execute("UPDATE Tasks SET Completion_time = ? WHERE task_id = ?", (task_time, task_id))
                 conn.commit()
@@ -133,7 +153,7 @@ def handle_user_response(request, user_number, user_message):
                 c.close()
                 msg = "Okay. I will remind you again to complete "+task_name+" at "+task_time+"."
                 client.messages.create(
-                    from_='whatsapp:+919643832733',
+                    from_='whatsapp:+917618207974',
                     body=msg,
                     to=user_number
                 )
@@ -144,7 +164,7 @@ def handle_user_response(request, user_number, user_message):
             conn.commit()
             c.close()
             client.messages.create(
-                from_='whatsapp:+919643832733',
+                from_='whatsapp:+917618207974',
                 body="Great! Keep it up!",
                 to=user_number
             )
@@ -152,11 +172,10 @@ def handle_user_response(request, user_number, user_message):
         else:
 
             client.messages.create(
-                from_='whatsapp:+919643832733',
+                from_='whatsapp:+917618207974',
                 body="Sorry, I didn't get that. Type 'help' to know more.",
                 to=user_number
             )
-
     elif user_message == 'no' or user_message == 'not yet' or user_message == 'not done' or user_message == 'not completed' or user_message == 'not finished':
         c = conn.cursor()
         c.execute("SELECT * FROM Users WHERE mobile_number = ?", (user_number[12:],))
@@ -186,7 +205,7 @@ def handle_user_response(request, user_number, user_message):
                 conn.commit()
                 c.close()
                 client.messages.create(
-                    from_='whatsapp:+919643832733',
+                    from_='whatsapp:+917618207974',
                     body="Okay. I will Discard it.",
                     to=user_number
                 )
@@ -196,14 +215,13 @@ def handle_user_response(request, user_number, user_message):
             conn.commit()
             c.close()
             client.messages.create(
-                from_='whatsapp:+919643832733',
+                from_='whatsapp:+917618207974',
                 body="Will you be able to complete it today?",
                 to=user_number
-            )
-        
+            )        
         else:
             client.messages.create(
-                from_='whatsapp:+919643832733',
+                from_='whatsapp:+917618207974',
                 body="Sorry, I didn't get that. Type 'help' to know more.",
                 to=user_number
             )
@@ -225,13 +243,13 @@ def handle_user_response(request, user_number, user_message):
                 conn.commit()
                 c.close()
                 client.messages.create(
-                    from_='whatsapp:+919643832733',
+                    from_='whatsapp:+917618207974',
                     body="Great! Keep it up! I marked this as complete.",
                     to=user_number
                 )
             else:
                 client.messages.create(
-                    from_='whatsapp:+919643832733',
+                    from_='whatsapp:+917618207974',
                     body="You have already completed this task.",
                     to=user_number
                 )
@@ -239,18 +257,25 @@ def handle_user_response(request, user_number, user_message):
             
             try:
                 prompt = f"User: {original_message}\nChatGPT:"
-                response = openai.Completion.create(
-                    engine="text-davinci-002",  # Choose the appropriate engine
-                    prompt=prompt,
-                    max_tokens=50  # Adjust max_tokens as needed
+                # response = openai.Completion.create(
+                #     engine="text-davinci-002",  # Choose the appropriate engine
+                #     prompt=prompt,
+                #     max_tokens=50  # Adjust max_tokens as needed
+                # )
+                response = openai.chat.completions.create(
+                    model="ft:gpt-3.5-turbo-0613:personal::8Xsif88y",  # Replace with your model identifier
+                    messages=[
+                        {"role": "system", "content": "You are TaskBlaze."},
+                        {"role": "user", "content": prompt}
+                    ]
                 )
 
-                chatgpt_response = response.choices[0].text.strip()
+                chatgpt_response = response.choices[0].message.content
                 print(chatgpt_response)
 
                 # Send the message via WhatsApp
                 client.messages.create(
-                    from_='whatsapp:+919643832733',
+                    from_='whatsapp:+917618207974',
                     body=chatgpt_response,
                     to=user_number
                 )
@@ -260,15 +285,18 @@ def handle_user_response(request, user_number, user_message):
                 # Here, you can handle the error as needed, 
                 # for example, by sending a default message or logging the error.
                 client.messages.create(
-                    from_='whatsapp:+919643832733',
+                    from_='whatsapp:+917618207974',
                     body="Sorry, I didn't get that. Type 'help' to know more.",
                     to=user_number
                 )
+    conn.close()
 
 
+from datetime import datetime
 
 @shared_task
 def send_reminders_new():
+
     conn = sqlite3.connect('usertasks.db',check_same_thread=False)
     c = conn.cursor()
     todays_date = timezone.now().strftime('%d-%m-%Y')
@@ -278,9 +306,8 @@ def send_reminders_new():
     current_time = timezone.now().astimezone(india_timezone).strftime('%H:%M')
     print(todays_date, current_time)
 
-    c.execute("SELECT * FROM Tasks WHERE status = ? AND date = ? AND Completion_time = ?", ('Incomplete', todays_date, current_time))
+    c.execute("SELECT * FROM Tasks WHERE status = ? AND date = ? AND Completion_time = ? AND Periodicity =?", ('Incomplete', todays_date, current_time, 'Once'))
     tasks = c.fetchall()
-
     for task in tasks:
         user_id = task[1]
         task_id = task[0]
@@ -293,21 +320,74 @@ def send_reminders_new():
         reminder_message = "Hey "+user_name+"! Have you completed: "+task_name + "? Reply with 'yes' or 'no'."
         user_number = 'whatsapp:+91'+user_number
         client.messages.create(
-            from_='whatsapp:+919643832733',
+            from_='whatsapp:+917618207974',
             body=reminder_message,
             to=user_number
         )
         current_time = timezone.now()
         c.execute("INSERT INTO \"Reminder Responses\" (User_Id, task_id, responded, r_time) VALUES (?, ?, ?, ?)", (user_id, task_id, 'No', current_time))
-
         conn.commit()
+        c.close()
+    c = conn.cursor()
+    c.execute("SELECT * FROM Tasks WHERE Periodicity != ?", ('Once',))
+    tasks = c.fetchall()
+    for task in tasks:
+        if task[4] == current_time or task[11] == current_time:
+            if task[4] == current_time:
+                c.execute("UPDATE Tasks SET temp_time = ? WHERE task_id = ?", (None, task[0]))
+                conn.commit()
+            user_id = task[1]
+            task_id = task[0]
+            c.execute("SELECT * FROM Users WHERE User_Id = ?", (user_id,))
+            user = c.fetchone()
+            user_number = user[2]
+            user_name = user[1]
+            task_name = task[2]
+            reminder_message = "Hey "+user_name+"! Have you completed: "+task_name + "? Reply with 'yes' or 'no'."
+            user_number = 'whatsapp:+91'+user_number
+            date_added = task[3]
+            todays_date = timezone.now().strftime('%d-%m-%Y')
+            todays_date = datetime.strptime(todays_date, '%d-%m-%Y').date()
+            date_added = datetime.strptime(date_added, '%d-%m-%Y').date()
+            difference = todays_date - date_added
+            difference = difference.days
+            if task[10] == 'Daily':
+                client.messages.create(
+                    from_='whatsapp:+917618207974',
+                    body=reminder_message,
+                    to=user_number
+                )
+                print('daily')
+                c.execute("INSERT INTO \"Reminder Responses\" (User_Id, task_id, responded, r_time) VALUES (?, ?, ?, ?)", (user_id, task_id, 'No', current_time))
+                conn.commit()
+            elif task[10] == 'Weekly' and difference%7 == 0:
+                client.messages.create(
+                    from_='whatsapp:+917618207974',
+                    body=reminder_message,
+                    to=user_number
+                )
+                print('weekly')
+                c.execute("INSERT INTO \"Reminder Responses\" (User_Id, task_id, responded, r_time) VALUES (?, ?, ?, ?)", (user_id, task_id, 'No', current_time))
+                conn.commit()
+
+            elif task[10] == 'Monthly' and difference%30 == 0:
+                client.messages.create(
+                    from_='whatsapp:+917618207974',
+                    body=reminder_message,
+                    to=user_number
+                )
+                print('monthly')
+                c.execute("INSERT INTO \"Reminder Responses\" (User_Id, task_id, responded, r_time) VALUES (?, ?, ?, ?)", (user_id, task_id, 'No', current_time))
+                conn.commit()
     c.close()
     conn.close()
 
 
 @shared_task
 def reminder_to_registered_user_every_morning_new():
+    conn = sqlite3.connect('usertasks.db',check_same_thread=False)
     reminder_time = '07:00'
+    # reminder_time = '19:28'
     india_timezone = pytz.timezone('Asia/Kolkata')
 
     # Get the current time in India
@@ -319,31 +399,32 @@ def reminder_to_registered_user_every_morning_new():
 
         c.execute("SELECT * FROM Users")
         users = c.fetchall()
+        c.execute("DELETE FROM \"Reminder Responses\"");
+        conn.commit()
 
         for user in users:
             user_id = user[0]
-            print(user_id)
+            # print(user_id)
             user_number = user[2]
             user_name = user[1]
             reminder_message = "Hey "+user_name+"\n\n! Good Morning! \n\n Add your tasks for today here:\n\n http://taskblaze.tech/add_task/"
             reminder_message += user_number
             user_number = 'whatsapp:+91'+user_number
+            print('test')
             client.messages.create(
-                from_='whatsapp:+919643832733',
+                from_='whatsapp:+917618207974',
                 body=reminder_message,
                 to=user_number
             )
             current_time = timezone.now()
-            c.execute("INSERT INTO \"Reminder Responses\" (User_Id, responded, r_time) VALUES (?, ?, ?)", (user_id, 'No', current_time))
-
-            conn.commit()
+            
         c.close()
         conn.close()
 
 
 # reminder_to_registered_user_every_morning_new()
 
-
+# send_reminders_new()
 
 
 # def testing_gpt():
@@ -359,3 +440,4 @@ def reminder_to_registered_user_every_morning_new():
 #     print(chatgpt_response)
 
 # testing_gpt()
+        

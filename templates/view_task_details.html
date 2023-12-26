@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Task Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <style>
+            .form-select,
+            .form-control {
+                margin-bottom: 20px;
+            }
+
+            #newEntryForm {
+                margin-top: 20px;
+            }
+            .editable-input {
+        border: none;
+        background: transparent;
+        outline: none;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .editable-input:focus {
+        border: 1px solid #ced4da;
+        background: #fff;
+        cursor: text;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    
+
+    
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .btn {
+        border: none;
+        transition: all 0.3s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+
+    
+
+    #editableTaskName {
+        border: none;
+        outline: none;
+        font-size: 1.8rem;
+        font-weight: bold;
+        background: transparent;
+        width: 80%;
+    }
+
+    #editableTaskName[readonly] {
+        border: none;
+        cursor: pointer;
+    }
+
+    .edit-icon {
+        cursor: pointer;
+        margin-left: 10px;
+    }
+
+    .edit-icon:hover {
+        color: #007BFF;
+    }
+    .container-fluid-details {
+        background-color: #f4f6f7;
+        padding: 20px;
+        width: 60%;
+        margin: 0 auto;
+        margin-top: 50px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+    @media (max-width: 768px) {
+        .container-fluid-details {
+            width: 90%;
+        }
+    }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid-details p-5">
+        <form id="myForm" action="/update-task-details/{{task.0}}/" method="post" class="mb-4">
+
+            <h2 class="mb-4 text-center">
+                <input type="text" id="editableTaskName" name="task_name" value="{{task.2}}" readOnly>
+                <i class="fas fa-pencil-alt edit-icon" onclick="toggleEdit()"></i>
+            </h2>
+
+            <!-- Priority -->
+            <div class="mb-3">
+                <label for="completion time" class="form-label">Completion Time</label>
+                <input type="text" class="form-control" id="completion time" name="completion_time" value="{{task.4}}" required>
+            </div>
+
+            <!-- Task Type -->
+            <div class="mb-3">
+                <label for="priority" class="form-label">Priority</label>
+                <input type="text" class="form-control" id="priority" name="priority" value="{{task.5}}" required>
+            </div>
+
+            <!-- Reminder -->
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" class="form-select">
+                    <option value="Complete" {% if task.8 == 'Complete' %}selected{% endif %}>Complete</option>
+                    <option value="Incomplete" {% if task.8 == 'Incomplete' %}selected{% endif %}>Incomplete</option>
+                    <option value="Discarded" {% if task.8 == 'Discarded' %}selected{% endif %}>Discarded</option>
+            </div>
+
+            <!-- Status -->
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes" rows="4" required>{{task.9}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="periodicity" class="form-label">Periodicity</label>
+                <select id="taskReason" name="periodicity" class="form-select">
+                    <option value="Once" {% if task.10 == 'Once' %}selected{% endif %}>Once</option>
+                    <option value="Daily" {% if task.10 == 'Daily' %}selected{% endif %}>Daily</option>
+                    <option value="Weekly" {% if task.10 == 'Weekly' %}selected{% endif %}>Weekly</option>
+                    <option value="Monthly" {% if task.10 == 'Monthly' %}selected{% endif %}>Monthly</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn btn-primary w-100 mt-2" data-task="{{task.0}}" onclick="updateTaskDetails(this)">Update Details</button>
+        </form>
+
+        <button class="btn btn-danger btn-sm w-100 mb-4" onclick="deleteTask('{{ task.0 }}')" >Delete</button>
+        <!-- Show New Entry Form Button -->
+        
+    </div>
+
+    <!-- JavaScripts -->
+    <script>
+        document.addEventListener('keydown', function(event) {
+            const input = document.getElementById("editableTaskName");
+
+            // Check if the pressed key is "Enter" and input is not readOnly
+            if (event.key === "Enter" && !input.readOnly) {
+                event.preventDefault();
+                input.readOnly = true;
+                editTask(input.value, '{{name}}');
+            }
+        });
+
+        function toggleEdit() {
+            const input = document.getElementById("editableTaskName");
+            input.readOnly = !input.readOnly;
+
+            if (!input.readOnly) {  // If in editing mode
+                input.focus();
+                
+                input.addEventListener('blur', function() {
+                    input.readOnly = true;
+                    editTask(input.value, '{{name}}');
+                }, { once: true });
+            }
+        }
+
+        // function editTask(newTaskName, name) {
+        //     // This is your existing function. We are using it to update the task name in the database.
+        //     window.location.href = `/update-task?old_name=${encodeURIComponent('{{task_name}}')}&new_name=${encodeURIComponent(newTaskName)}&name=${encodeURIComponent(name)}`;
+        // }
+
+        function updateTaskName() {
+            const input = document.getElementById("editableTaskName");
+            // Call your backend API or method here to update the task name
+            // Example: 
+            // fetch('/update-task-name', { method: 'POST', body: JSON.stringify({ newName: input.value }) });
+        }
+
+        function deleteTask(task_id) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                window.location.href = `/delete-task/${encodeURIComponent(task_id)}`;
+            }
+        }
+//         function updateTaskDetails() {
+//     const formData = new FormData(document.querySelector('form'));
+
+//     fetch('/update-task-details/{{task.0}}/', {
+//         method: 'POST',
+//         body: formData
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log('Success:', data);
+//         // Handle successful update (e.g., display a success message)
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         // Handle errors (e.g., display an error message)
+//     });
+// }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

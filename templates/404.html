@@ -1,0 +1,97 @@
+<!-- templates/404.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Not Found</title>
+    <!-- Add any other head elements and CSS links -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+</head>
+<style>
+    .navbar {
+        background-color: #fff; /* Change as needed */
+        box-shadow: 0 2px 4px rgba(153, 126, 216, 0.1); /* Soft shadow for depth */
+    }
+
+    .navbar-brand {
+        font-size: 1.5em; /* Larger brand name */
+        font-weight: bold;
+        color: #333; /* Change as needed */
+    }
+    /* Styling for the link */
+    .nav-link {
+        position: relative;
+        display: inline-block; /* Ensures the underline aligns correctly */
+        color: #333; /* Text color */
+        text-decoration: none; /* Removes default underline */
+        transition: color 0.3s ease; /* Optional: transition for the text color */
+    }
+
+    /* Pseudo-element for the underline */
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px; /* Thickness of the underline */
+        bottom: -3px; /* Position of the underline */
+        left: 0;
+        background-image: linear-gradient(45deg, #ff6e7f, #bfe9ff); /* Gradient colors */
+        transition: width 0.4s ease;
+    }
+
+    /* Hover effect */
+    .nav-link:hover::after {
+        width: 100%; /* Full width on hover */
+    }
+
+
+    /* Mobile view styling */
+    .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url('projects/nav-bar-toggler.png'); /* Optional: Custom icon for the toggler */
+    }
+    .container {
+        width: 90%;
+        margin: auto;
+        overflow: hidden;
+        margin-top: 200px;
+    }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" name="navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" name="task_blaze_logo">Task Blaze</a>
+            <button class="navbar-toggler" name="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+
+                    <!-- <a class="nav-link" href="skills">Skills</a> -->
+                    <!-- <a class="nav-link" href="projects">Projects</a> -->
+                    <!-- <a class="nav-link" href="achievements">Achievements</a> -->
+                    <!-- <a class="nav-link" href="https://wa.me/+919643832733?text=Add%20tasks" target="_blank">Add Task</a>
+                    <a class="nav-link" href="https://wa.me/+919643832733?text=View%20tasks" target="_blank">View Tasks</a> -->
+
+                    <a class="nav-link" href="/contact">Contact</a>
+                    <!-- <a class="nav-link" href="about">About</a>  -->
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container text-center">
+        <h1>404: Page Not Found</h1>
+        <p>Sorry, the page you're looking for doesn't exist.</p>
+        <!-- Add more content or styling as needed -->
+    </div>
+</body>
+</html>

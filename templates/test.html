@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Tasks - {{ user_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+    <style>
+        /* General styling */
+body {
+    background-color: #f4f7f6;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+html {
+    height: 100%;
+}
+
+
+
+
+.container-fluid {
+    position: relative;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    height: 100%;
+    flex: 1;
+}
+
+h1 {
+    color: #4a4e69;
+    
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    background-color: #f4f7f6;
+    height: calc(500px - 20px); /* Adjust the 20px to the desired bottom gap */
+    overflow-y: auto; /* Use auto instead of scroll for cleaner look when content is short */
+    margin-bottom: 20px; /* This adds space below the sidebar */
+    box-shadow: #dee2e6;
+}
+
+.sidebar-heading {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0; /* Adjust the top offset as needed */
+    background: #f4f7f6; /* Set a background to ensure text is readable when it overlaps other content */
+    z-index: 100; /* Ensure it stays on top of other elements */
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid #1682ef;
+}
+
+/* Style for your link */
+.nav-link {
+    position: relative;
+    display: inline-block; /* or block, depending on your layout */
+    color: #495057; /* your text color */
+    text-decoration: none; /* removes the default underline */
+}
+
+/* Add the pseudo-element */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px; /* thickness of the underline */
+    bottom: 0; /* position of the underline */
+    left: 50%;
+    background-color: #007bff; /* color of the underline */
+    transition: width 0.4s ease 0s, left 0.4s ease 0s;
+}
+
+/* Hover effect */
+.nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+
+.nav-link.selected {
+    
+    color: white;
+    border-bottom: #007bff 2px solid;
+}
+
+
+/* Main Content Styling */
+table {
+    background-color: #ffffff;
+    border-collapse: collapse;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+
+table:hover {
+    box-shadow: 0 8px 16px rgba(97, 140, 182, 0.2);
+}
+
+th, td {
+    border: 1px solid #dee2e6;
+    padding: 15px;
+    text-align: left;
+}
+
+th {
+    background-color: rgb(38, 152, 82)255, 149);
+    color: #ffffff;
+    font-weight: bold;
+    position: sticky;
+    top: 0; /* Set to 0 to stick at the top of the container */
+    background-color: white; /* Optional: to ensure text is readable over any underlying content */
+    z-index: 1; 
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar, .main-content {
+        width: 100%;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+    #pieChartContainer {
+        position: absolute;
+        top: 220px;
+        right: 10px;
+        width: 120px;
+        height: 120px;
+    }
+}
+
+/* Accordion Styling */
+.accordion-header {
+    cursor: pointer;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.accordion-content {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+@media (min-width: 768px) {
+    #pieChartContainer {
+        position: absolute;
+        top: 45px;
+        right: 10px;
+        width: 120px;
+        height: 120px;
+    }
+}
+.table-responsive {
+    height: 400px;
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+    
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg custom-navbar">
+        <a class="navbar-brand" href="#">TaskBlaze</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Portfolio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://taskblaze.tech/add_tasks/{{mobile_number}}">Add Tasks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Journal</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    
+    
+    <div class="container-fluid mb-5" >
+        <h1>{{ user_name }}'s Tasks</h1>
+        <div class="row">
+            <!-- Sidebar -->
+            
+            <nav id="sidebar" class="col-lg-2 d-md-block ">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center text-muted">
+                    Dates
+                </h6>
+                <div>                    
+                    <ul class="nav">
+                        {% for date in unique_dates %}
+                        <li style="width: auto;">
+                            <a class="nav-link date-filter {% if date_selected == date %}selected{% endif %}" data-date="{{ date }}">{{ date }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+                <div class="container">
+                    <form method="post" class="mb-4">
+                        {% csrf_token %}
+
+                        <div class="form-row align-items-center">
+                            <div class="col-auto">
+                                <label for="date-filter" class="sr-only">Filter by Date:</label>
+                                <input type="text" id="date-filter" name="selected_date" class="form-control" autocomplete="off" value="{{date_selected}}" placeholder="Select a date">
+                            </div>
+
+                        </div>
+                    </form>
+                    {% if tasks|length != 0 %}
+                    
+                    <div class="accordion-container">
+                        <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Task Name</th>
+                                    <th scope="col">Completion Time</th>
+                                    <th scope="col">Priority</th>
+                                    <th scope="col">Completed</th>
+                                    <th scope="col">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr>
+                                    <!-- Inside the loop where tasks are displayed -->
+                                    {% if date_selected == todays_date %}                                                                
+                                    <td class="editable" onclick="startEditing(this, '{{ task.0 }}', 'task_name')">{{ task.2 }}</td>
+                                    <td class="editable" onclick="startEditing(this, '{{ task.0 }}', 'completion_time')">{{ task.4 }}</td>
+                                    <td class="editable" onclick="startEditing(this, '{{ task.0 }}', 'priority')">{{ task.5 }}</td>
+                                    <!-- Other columns remain unchanged -->
+                                    {% else %}
+                                    <td>{{ task.2 }}</td>
+                                    <td>{{ task.4 }}</td>
+                                    <td>{{ task.5 }}</td>
+                                    {% endif %}
+
+
+
+                                    <td>{{ task.8 }}</td>
+                                    <td>
+                                        <!-- Accordion item for each task -->
+                                        <div class="accordion-item">
+                                            <div class="accordion-header" onclick="toggleAccordion('{{ task.0 }}')">
+                                                View Notes
+                                            </div>
+                                            <div class="accordion-content" id="{{ task.0 }}">
+                                                <textarea id="notes-{{ task.0 }}" rows="4" cols="60">{{ task.9 }}</textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info" role="alert">
+                        No tasks are available for today.
+                    </div>
+                    <div class="col-auto filter-buttons">
+                        <a href="https://taskblaze.tech/add_tasks/{{mobile_number}}">Add Tasks Now </a>
+                    </div>
+                    {% endif %}
+
+                    
+                </div>
+            </main>
+
+        </div>
+    </div>
+
+    <!-- Pie Chart Container -->
+    <div id="pieChartContainer">
+        <canvas id="pieChart" width="500" height="150"></canvas>
+    </div>
+    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    <footer class="bg-light text-center text-lg-start">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2023
+            <a class="text-dark" href="https://taskblaze.tech/view_tasks/{{mobile_number}}">TaskBlaze</a>
+        </div>
+      </footer>
+      
+
+    <!-- Bootstrap JS, Popper.js, and Bootstrap Datepicker scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <!-- ... Your HTML and CSS ... -->
+
+<script>
+        $(document).ready(function () {
+            $('#date-filter').datepicker({
+                format: 'dd-mm-yyyy',
+                endDate: new Date(),
+                autoclose: true,
+                todayHighlight: true
+            });
+
+            document.getElementById("date-filter").style.display = "none";
+
+            $(document).on('click', '.date-filter', function () {
+                var selectedDate = $(this).data('date');
+                $('#date-filter').datepicker('setDate', selectedDate);
+                $('form').submit();
+            });
+
+            var completedCount = {{ completed_count }};
+            var incompleteCount = {{ incomplete_count }};
+
+            var ctx = document.getElementById('pieChart').getContext('2d');
+            var pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    datasets: [{
+                        data: [completedCount, incompleteCount],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                    }],
+                },
+                options: {
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            formatter: function (value, context) {
+                                return context.chart.data.labels[context.dataIndex] + ': ' + value + '%';
+                            },
+                        },
+                    },
+                },
+            });
+
+            
+        });
+        function startEditing(cell, taskId, column) {
+            // Replace the content of the cell with an input field
+            const input = document.createElement('input');
+            input.value = cell.innerText;
+            cell.innerHTML = '';
+            cell.appendChild(input);
+
+            // Focus on the input field
+            input.focus();
+
+            // Attach an event listener to finish editing on Enter key press
+            input.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    finishEditing(cell, taskId, column);
+                }
+            });
+        }
+        function finishEditing(cell, taskId, column) {
+            // Replace the input field with its value
+            var updatedValue = cell.firstChild.value;
+            cell.innerText = updatedValue;
+
+            // Make an AJAX request to update the task details
+            $.ajax({
+                url: '/update_task/',  // Replace with the actual URL to update task details on your server
+                method: 'POST',
+                data: {
+                    task_id: taskId,
+                    column: column,
+                    value: updatedValue
+                },
+                success: function (response) {
+                    console.log('Task details updated successfully:', response);
+                    // You can add further actions if needed
+                },
+                error: function (error) {
+                    console.error('Error updating task details:', error);
+                    // Handle errors appropriately
+                }
+            });
+        }
+
+        function toggleAccordion(contentId) {
+            console.log(contentId);
+            var content = document.getElementById(contentId);
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+            var taskId = contentId;
+            var updatedNotes = document.getElementById("notes-" + taskId).value;
+
+            // Make an AJAX request to update the notes
+            $.ajax({
+                url: '/update_notes/',  // Replace with the actual URL to update notes on your server
+                method: 'POST',
+                data: {
+                    task_id: taskId,
+                    notes: updatedNotes
+                },
+                success: function (response) {
+                    console.log('Notes updated successfully:', response);
+                    // You can add further actions if needed
+                },
+                error: function (error) {
+                    console.error('Error updating notes:', error);
+                    // Handle errors appropriately
+                }
+            });
+        }
+        const xValues = {{ unique_dates|safe }};
+        
+        console.log(xValues);
+        const yValues = {{ total_tasks|safe }};
+        const zValues = {{ completed_tasks|safe }};
+
+        const remainingTasks = yValues.map((y, i) => y - zValues[i]);
+
+        new Chart("myChart", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [
+                {
+                    label: 'Completed Tasks',
+                    data: zValues,
+                    backgroundColor: "rgba(0, 128, 0, 0.7)",
+                    borderColor: "rgba(0, 128, 0, 1)",
+                    borderWidth: 1
+                },
+                {
+                    label: 'Remaining Tasks',
+                    data: remainingTasks,
+                    backgroundColor: "rgba(143, 120, 101, 0.97)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            legend: { display: true },
+            scales: {
+                yAxes: [{
+                    stacked: true,
+                    ticks: { min: 0, max: 16 },
+                    
+                }],
+                xAxes: [{
+                    stacked: true,
+                    
+                }]
+            }
+        }
+    });
+
+    </script>
+<!-- ... Your HTML ... -->
+
+</body>
+
+</html>
