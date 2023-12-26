@@ -15,8 +15,8 @@ import sqlite3
 import requests
 
 
-account_sid = 'AC350f7216d74983430088fa7b2f6e2662'
-auth_token = 'd3bf470287a686ed42050a37dd616967'
+account_sid = 'xxxx'
+auth_token = 'xxxx'
 client = Client(account_sid, auth_token)
 
 
